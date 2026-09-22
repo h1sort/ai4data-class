@@ -253,6 +253,27 @@ hr.rule{border:0;border-top:1px solid var(--rule);margin:0}
   #s1 .reveal{opacity:1;transform:none}#s1 .t-data::after{transform:scaleX(1)}
   .stream .pkt{opacity:1;left:50%}
 }
+
+/* ---- opening poll: local QR asset and readable fallback link ---- */
+.poll-entry .slide-content{width:min(100%,1040px);margin:0 auto}
+.poll-join{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:clamp(1rem,4vw,3rem);margin-top:clamp(1rem,3vh,2rem)}
+.poll-join .col{gap:clamp(0.6rem,1.5vh,1rem)}
+.poll-qr{width:clamp(210px,29vw,340px);max-width:38vh;aspect-ratio:1;display:block;border:1px solid var(--rule-strong)}
+.poll-url{display:inline-block;font-family:var(--mono);font-size:clamp(0.8rem,1.5vw,1.15rem);color:var(--ink);text-decoration-color:var(--accent);text-underline-offset:0.3em;overflow-wrap:anywhere;line-height:1.6}
+.poll-entry a:focus-visible{outline:3px solid var(--accent);outline-offset:6px}
+.poll-demo .code-body{white-space:pre-wrap;overflow-wrap:anywhere}
+.speaker-bio{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:clamp(0.65rem,1.7vh,1.1rem) clamp(1rem,3vw,2.5rem);margin-top:clamp(1.2rem,3vh,2rem);align-items:baseline}
+.speaker-bio dt{font-family:var(--mono);font-size:clamp(0.58rem,1vw,0.75rem);letter-spacing:0.08em;color:var(--muted)}
+.speaker-bio dd{font-size:clamp(0.85rem,1.7vw,1.2rem);line-height:1.5;min-width:0}
+.speaker-bio a{color:var(--ink);text-decoration-color:var(--accent);text-underline-offset:0.22em}
+.speaker-bio a:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.speaker-bio .speaker-takes{border-left:3px solid var(--accent);padding-left:clamp(0.6rem,1.4vw,1rem)}
+@media(max-width:700px){
+  .poll-join{grid-template-columns:1fr;gap:0.8rem;margin-top:0.8rem}
+  .poll-qr-link{justify-self:center;grid-row:1}
+  .poll-qr{width:clamp(150px,25vh,210px);max-width:100%}
+  .poll-entry .sub{line-height:1.4}
+}
 </style>
 </head>
 <body>
@@ -264,8 +285,85 @@ hr.rule{border:0;border-top:1px solid var(--rule);margin:0}
      CLASE 1 · CÓMO HA CAMBIADO EL ROL DE DATOS EN LA ERA IA
      ════════════════════════════════════════════════════════════ -->
 
+<!-- ─── APERTURA · ENCUESTA EN VIVO ────────────────────── -->
+<!-- Instructor: mostrar esta diapositiva al recibir al grupo. Encuesta abierta antes de empezar.
+     Guion: ../demos/clase-01-poll-prompts.md. Prompts 0–3 al inicio; 4–8 al retomar la demo. -->
+<section class="slide visible poll-entry" id="s0">
+  <div class="slide-content">
+    <div class="section-marker reveal">AI 4 Data &middot; empezamos contigo</div>
+    <h2 class="reveal" style="margin-top:0.6rem;">El primer dataset es <em>esta sala.</em></h2>
+    <p class="sub reveal" style="margin-top:0.6rem;max-width:680px;">Seis preguntas sobre tu trabajo, c&oacute;mo usas IA y c&oacute;mo revisas sus resultados. Las analizamos juntos, en vivo.</p>
+    <div class="poll-join reveal">
+      <div class="col">
+        <div class="col-label" style="color:var(--accent);">Escanea o abre el enlace &middot; 2 minutos</div>
+        <a class="poll-url" href="https://h1sort.com/p/JFQES4AF97" target="_blank" rel="noopener noreferrer">h1sort.com/p/JFQES4AF97</a>
+        <ul class="bullets">
+          <li>Responde las <strong>seis preguntas</strong> desde el mismo navegador.</li>
+          <li>En las escalas: <strong>1 = ninguna confianza; 5 = mucha confianza.</strong></li>
+          <li>No pedimos nombre ni correo. Veremos <strong>resultados agregados.</strong></li>
+        </ul>
+        <p class="sub">Tus respuestas nos ayudan a elegir los ejemplos y el ritmo de la clase.</p>
+      </div>
+      <a class="poll-qr-link" href="https://h1sort.com/p/JFQES4AF97" target="_blank" rel="noopener noreferrer" aria-label="Abrir la encuesta AI 4 Data">
+        <img class="poll-qr" src="assets/ai4data-poll-qr.svg" width="340" height="340" alt="C&oacute;digo QR para la encuesta AI 4 Data: h1sort.com/p/JFQES4AF97">
+      </a>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>ANTES DE EMPEZAR</span><span>6 preguntas &middot; una respuesta por navegador y pregunta</span></div>
+</section>
+
+<section class="slide poll-demo" id="s0-results">
+  <div class="slide-content" style="max-width:min(92vw,920px);margin:0 auto;">
+    <div class="section-marker reveal">Primera lectura &middot; abrimos Codex</div>
+    <h2 class="reveal" style="margin-top:0.6rem;">Conozcamos <em>la sala.</em></h2>
+    <p class="sub reveal" style="margin-top:0.5rem;max-width:740px;">Las respuestas ya son filas en D1. Codex consulta esa base mediante MCP y nos ense&ntilde;a el SQL detr&aacute;s de cada resultado.</p>
+    <div class="prompt reveal" style="margin-top:clamp(0.8rem,2vh,1.3rem);">
+      <span class="plabel">primera pregunta al agente</span>
+      <span class="pcmd">Analiza la encuesta &ldquo;AI 4 Data&rdquo;: &iquest;cu&aacute;ntos respondieron, qu&eacute; roles hay y c&oacute;mo usan IA? Muestra el SQL, los recuentos y el denominador de cada porcentaje.</span>
+    </div>
+    <ul class="bullets reveal" style="margin-top:clamp(0.8rem,2vh,1.3rem);">
+      <li><strong>Qui&eacute;nes somos:</strong> roles, participaci&oacute;n y cuestionarios completos.</li>
+      <li><strong>Qu&eacute; hacemos:</strong> uso reciente de IA y experiencia con agentes conectados a datos.</li>
+      <li><strong>Cu&aacute;nta confianza declaramos:</strong> revisar SQL y confiar en un an&aacute;lisis.</li>
+    </ul>
+    <div class="callout note reveal" style="margin-top:clamp(0.8rem,2vh,1.3rem);">
+      <span class="ctxt"><strong>Una foto con hora de corte.</strong> Respuestas no es lo mismo que participantes; un navegador no garantiza una persona. Al final volveremos a estos datos para discutir qu&eacute; podemos concluir.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>ENCUESTA &rarr; D1 &rarr; MCP &rarr; CODEX</span><span>datos de la sala &middot; SQL visible &middot; corte UTC</span></div>
+</section>
+
+<!-- ─── PRESENTACIÓN · QUIÉN ESTÁ AL FRENTE ────────────── -->
+<section class="slide" id="who-is-this-dude" lang="en">
+  <div class="slide-content" style="width:min(100%,920px);margin:0 auto;">
+    <div class="section-marker reveal" style="text-transform:none;">who_is_this_dude?</div>
+    <h2 class="reveal" style="margin-top:0.7rem;font-size:clamp(2.5rem,6vw,4.5rem);">Carlos <em>Haro</em></h2>
+    <dl class="speaker-bio reveal">
+      <dt>CURRENTLY</dt>
+      <dd>Sr. AI Engineer at Banco Santander</dd>
+      <dt>PREVIOUSLY</dt>
+      <dd>almost 10 years of dealing with data</dd>
+      <dt>LINKEDIN</dt>
+      <dd><a href="https://www.linkedin.com/in/h1sort/" target="_blank" rel="noopener noreferrer">h1sort</a></dd>
+      <dt>I_LOVE_X</dt>
+      <dd><a href="https://x.com/h1sort" target="_blank" rel="noopener noreferrer">h1sort</a></dd>
+      <dt>WEBSITE</dt>
+      <dd><a href="https://h1sort.com" target="_blank" rel="noopener noreferrer">h1sort.com</a></dd>
+      <dt>TAKES</dt>
+      <dd class="speaker-takes">
+        <p>dogs are better than cats</p>
+        <p>pandas and ipynb should disappear from this world</p>
+      </dd>
+    </dl>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>CARLOS HARO</span><span>h1sort.com</span></div>
+</section>
+
 <!-- ─── 01 · PORTADA ───────────────────────────────────── -->
-<section class="slide visible" id="s1">
+<section class="slide" id="s1">
   <div class="trace-bg" aria-hidden="true">
     <div class="trace-col">
       <span><span class="ts">09:41:02.118</span>  READ_DOMAIN_DOC     metrics/clientes_activos.md</span>
@@ -326,8 +424,8 @@ hr.rule{border:0;border-top:1px solid var(--rule);margin:0}
 <section class="slide" id="s2">
   <div class="slide-content" style="max-width:min(92vw,920px);margin:0 auto;">
     <div class="section-marker reveal">Hoy</div>
-    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Seis paradas y una <em>demo.</em></h2>
-    <p class="sub reveal" style="margin-top:0.4rem;max-width:680px;">Primero qu&eacute; cambi&oacute; y por qu&eacute;. Luego el vocabulario m&iacute;nimo para el resto del curso. Al final, un agente respondiendo sobre un warehouse real desde tu port&aacute;til.</p>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Una encuesta, seis paradas y <em>una pregunta mejor.</em></h2>
+    <p class="sub reveal" style="margin-top:0.4rem;max-width:680px;">Ya vimos al agente describir la sala. Ahora veremos qu&eacute; cambi&oacute; en el trabajo de datos y c&oacute;mo funciona ese sistema. Al final, volvemos a la encuesta para poner a prueba nuestras definiciones.</p>
     <table class="dtable reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);max-width:820px;">
       <thead><tr><th style="width:3.5rem;">#</th><th>Parada</th><th>La pregunta que responde</th></tr></thead>
       <tbody>
@@ -337,7 +435,7 @@ hr.rule{border:0;border-top:1px solid var(--rule);margin:0}
         <tr><td class="num">4</td><td>Sistemas preparados para agentes</td><td>Siete criterios que puedes comprobar</td></tr>
         <tr><td class="num">5</td><td>Cu&aacute;ndo elegir cada uno</td><td>Seis preguntas antes de mirar precios</td></tr>
         <tr><td class="num">6</td><td>Stacks para trabajar con LLMs</td><td>Tres configuraciones que funcionan hoy</td></tr>
-        <tr class="hot"><td class="num">&#9654;</td><td>Demo</td><td>Un agente sobre un warehouse local, v&iacute;a MCP</td></tr>
+        <tr class="hot"><td class="num">&#9654;</td><td>Volvemos a la demo</td><td>&iquest;Qu&eacute; significa estar preparado para trabajar con agentes?</td></tr>
       </tbody>
     </table>
   </div>
@@ -610,7 +708,7 @@ hr.rule{border:0;border-top:1px solid var(--rule);margin:0}
 <section class="slide" id="s17">
   <div class="slide-content" style="max-width:min(92vw,940px);margin:0 auto;">
     <div class="section-marker reveal">OLTP vs OLAP</div>
-    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Tu base de producci&oacute;n no es donde <em>debe leer un agente.</em></h2>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">La exploraci&oacute;n de un agente necesita <em>su propio espacio.</em></h2>
     <div class="two-col reveal" style="margin-top:clamp(0.6rem,1.5vh,1rem);flex:unset;">
       <div class="col">
         <div class="col-label" style="color:var(--muted);">OLTP &middot; transaccional</div>
@@ -637,7 +735,7 @@ hr.rule{border:0;border-top:1px solid var(--rule);margin:0}
     </div>
     <div class="callout danger reveal" style="margin-top:clamp(0.5rem,1.2vh,0.9rem);">
       <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
-      <span class="ctxt">Un agente explorando hace <strong>decenas de queries anal&iacute;ticas</strong> por pregunta, y no sabe cu&aacute;l es cara. Sobre la base que sirve a tus clientes, eso es un incidente. Sobre un OLAP aislado, es un martes normal. Por eso la Clase 2 empieza migrando.</span>
+      <span class="ctxt"><strong>Hoy simplificamos:</strong> consultas peque&ntilde;as sobre el D1 de la encuesta, compartido con la app. Esa carga compite con las escrituras. Para exploraci&oacute;n abierta, aislamos el an&aacute;lisis en un OLAP; por eso la Clase 2 empieza migrando. Pedir solo SELECT no equivale a tener permisos de solo lectura.</span>
     </div>
   </div>
   <hr class="rule" style="margin-bottom:0.7rem;">
@@ -915,52 +1013,53 @@ docs/
 </section>
 
 <!-- ─── 30 · DEMO ──────────────────────────────────────── -->
-<section class="slide" id="s30">
+<section class="slide poll-demo" id="s30">
   <div class="slide-content" style="max-width:min(92vw,920px);margin:0 auto;">
-    <div class="section-marker reveal">Demo &middot; en vivo</div>
-    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Un agente sobre un warehouse local, <em>v&iacute;a MCP.</em></h2>
-    <p class="sub reveal" style="margin-top:0.4rem;max-width:720px;">DuckDB con el modelo de la app de ejemplo, un servidor MCP de solo lectura, y un agente de c&oacute;digo sin ninguna instrucci&oacute;n especial. Solo la pregunta.</p>
+    <div class="section-marker reveal">Volvemos a la encuesta &middot; en vivo</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Mismos datos. <em>&iquest;Qu&eacute; queremos medir?</em></h2>
+    <p class="sub reveal" style="margin-top:0.4rem;max-width:720px;">Al inicio describimos la sala. Ahora cruzamos confianza y h&aacute;bitos de validaci&oacute;n, y planteamos una pregunta que la encuesta no responde por s&iacute; sola.</p>
     <div class="prompt reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);max-width:760px;">
       <span class="plabel">pregunta al agente</span>
-      <span class="pcmd">&iquest;Cu&aacute;ntos clientes activos tuvimos en marzo? Ens&eacute;&ntilde;ame el SQL.</span>
+      <span class="pcmd">&iquest;Qu&eacute; porcentaje del grupo est&aacute; preparado para trabajar con agentes? &iquest;Qu&eacute; definici&oacute;n y denominador necesitas antes de calcularlo?</span>
     </div>
     <div class="col-label reveal" style="margin-top:clamp(0.7rem,1.6vh,1.1rem);color:var(--muted);">qu&eacute; mirar mientras corre</div>
     <ul class="bullets reveal" style="margin-top:0.3rem;max-width:760px;">
-      <li>Qu&eacute; <strong>tablas elige</strong> y por qu&eacute;. &iquest;Las explor&oacute; antes o fue directo?</li>
-      <li>C&oacute;mo interpreta <strong>&ldquo;activo&rdquo;</strong> sin que nadie se lo haya definido.</li>
-      <li>Cu&aacute;ntas <strong>queries</strong> lanza antes de responder. &iquest;Alguna cara?</li>
-      <li>Si <strong>declara sus supuestos</strong> o los esconde dentro del n&uacute;mero.</li>
+      <li>Si distingue <strong>uso, confianza y competencia</strong>: medimos los dos primeros, no demostramos la tercera.</li>
+      <li>Qu&eacute; <strong>denominador</strong> usa y c&oacute;mo trata las respuestas incompletas.</li>
+      <li>Si conserva el <strong>mismo corte y la misma muestra</strong> al comparar definiciones.</li>
+      <li>Si <strong>pide contexto</strong> antes de convertir &ldquo;preparado&rdquo; en un porcentaje.</li>
     </ul>
     <div class="spoiler reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);max-width:760px;">
       <div class="callout danger">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
-        <span class="ctxt"><strong>Lo que suele pasar:</strong> tres ejecuciones, tres definiciones de &ldquo;activo&rdquo; (con pedido, con login, con pedido pagado), tres n&uacute;meros distintos, SQL v&aacute;lido en los tres. El modelo no fall&oacute;. El contexto no exist&iacute;a.</span>
+        <span class="ctxt"><strong>Tres convenciones, tres indicadores:</strong> A = us&oacute; IA esta semana; B = A + ha usado agentes conectados; C = B + compara SQL con resultados conocidos o pruebas. Sobre los mismos cuestionarios completos, C &le; B &le; A. Los porcentajes pueden diferir; ninguno demuestra &ldquo;preparaci&oacute;n&rdquo; por s&iacute; solo.</span>
       </div>
     </div>
   </div>
   <hr class="rule" style="margin-bottom:0.7rem;">
-  <div class="meta"><span>DEMO</span><span>DuckDB &middot; MCP solo lectura &middot; agente de c&oacute;digo</span></div>
+  <div class="meta"><span>DEMO &middot; AI 4 DATA</span><span>D1 &middot; MCP &middot; Codex &middot; consultas SELECT</span></div>
 </section>
 
 <!-- ─── 31 · LO QUE ACABAS DE VER ──────────────────────── -->
-<section class="slide" id="s31">
+<section class="slide poll-demo" id="s31">
   <div class="slide-content" style="max-width:min(92vw,920px);margin:0 auto;">
     <div class="section-marker reveal">Lo que acabas de ver</div>
-    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">El SQL es la respuesta. El n&uacute;mero es <em>una consecuencia.</em></h2>
-    <p class="sub reveal" style="margin-top:0.4rem;max-width:720px;">Cada ejecuci&oacute;n deja una traza. Normalizada en pasos, se puede leer, comparar y evaluar. As&iacute; se ve la de hoy:</p>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">La definici&oacute;n cambia el SQL. El n&uacute;mero es <em>una consecuencia.</em></h2>
+    <p class="sub reveal" style="margin-top:0.4rem;max-width:720px;">La respuesta incluye el camino: encuesta elegida, corte, muestra, definici&oacute;n y consulta. Este es el esquema con el que revisamos la ejecuci&oacute;n real:</p>
     <div class="code-block reveal" style="margin-top:clamp(0.5rem,1.2vh,0.9rem);flex:unset;max-width:760px;">
-      <div class="code-header"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span><span class="code-label">traza normalizada &middot; run_7f3a</span></div>
-      <div class="code-body"><span class="n">LIST_TABLES</span>          <span class="cm">7 tablas</span>
-<span class="n">READ_SCHEMA</span>          <span class="cm">clientes, pedidos, sesiones</span>
-<span class="r">READ_DOMAIN_DOC</span>      <span class="r">&mdash; falta: nadie escribi&oacute; qu&eacute; es "activo"</span>
-<span class="r">READ_SEMANTIC_VIEW</span>   <span class="r">&mdash; falta: no hay capa sem&aacute;ntica</span>
-<span class="n">EXECUTE_SQL</span>          <span class="k">SELECT</span> <span class="fn">count</span>(<span class="k">DISTINCT</span> cliente_id) <span class="k">FROM</span> pedidos
-                     <span class="k">WHERE</span> fecha <span class="k">BETWEEN</span> <span class="s">'2026-03-01'</span> <span class="k">AND</span> <span class="s">'2026-03-31'</span>
-<span class="n">SYNTHESIZE_ANSWER</span>    <span class="cm">"4.812 clientes activos"  supuestos: 1 (impl&iacute;cito)</span></div>
+      <div class="code-header"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span><span class="code-label">esquema de revisi&oacute;n &middot; no es un resultado precalculado</span></div>
+      <div class="code-body"><span class="n">READ_SCHEMA</span>       <span class="cm">poll_groups, polls, poll_options, poll_votes</span>
+<span class="n">SELECT_GROUP</span>      <span class="cm">AI 4 Data &middot; JFQES4AF97</span>
+<span class="n">FIX_CUTOFF</span>        <span class="cm">misma hora UTC para comparar</span>
+<span class="r">DEFINE_METRIC</span>     <span class="r">A, B o C: la convenci&oacute;n debe ser expl&iacute;cita</span>
+<span class="r">DEFINE_COHORT</span>     <span class="r">seis respuestas completas por navegador</span>
+<span class="n">EXECUTE_SQL</span>       <span class="cm">SELECT con filtros, joins y denominador</span>
+<span class="n">CHECK_RESULT</span>      <span class="cm">C &le; B &le; A &middot; sin respuestas &ne; 0%</span>
+<span class="n">SYNTHESIZE_ANSWER</span>  <span class="cm">n/N, porcentaje y l&iacute;mites de la interpretaci&oacute;n</span></div>
     </div>
     <div class="callout proof reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
       <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
-      <span class="ctxt">Un n&uacute;mero correcto por un camino imperfecto vale menos que un n&uacute;mero correcto por el camino definido, y se rompe con el siguiente modelo. Las dos l&iacute;neas en rojo son las que rellenan las Clases 2 y 7. <strong>Evaluar el camino y no solo el resultado</strong> es la Clase 10.</span>
+      <span class="ctxt">Hoy escribimos el criterio en los prompts. Las Clases 2 y 7 lo llevan al modelo de datos y a definiciones reutilizables. La Clase 10 comprueba que el agente siga ese camino. <strong>Conectar da acceso; definir da significado; evaluar da evidencia.</strong></span>
     </div>
   </div>
   <hr class="rule" style="margin-bottom:0.7rem;">
@@ -975,7 +1074,7 @@ docs/
     <ul class="bullets reveal" style="margin-top:clamp(0.7rem,1.6vh,1.1rem);max-width:780px;gap:clamp(0.45rem,1vh,0.7rem);">
       <li><strong>Producir an&aacute;lisis es barato; el consenso es el recurso escaso.</strong> Y el consenso se dise&ntilde;a, se afirma y se mide.</li>
       <li><strong>El trabajo pasa de producir an&aacute;lisis a codificar criterio:</strong> definiciones, contexto, controles y evals que un agente pueda leer.</li>
-      <li><strong>OLTP sirve a la app; OLAP sirve a las preguntas.</strong> Un agente nunca explora sobre producci&oacute;n.</li>
+      <li><strong>OLTP sirve a la app; OLAP sirve a las preguntas.</strong> La demo peque&ntilde;a en D1 no sustituye el aislamiento que necesita la exploraci&oacute;n en producci&oacute;n.</li>
       <li><strong>Un sistema est&aacute; preparado para agentes si tiene</strong> cat&aacute;logo, sem&aacute;ntica, acceso, auditor&iacute;a, MCP, IA en SQL y aislamiento. Y si tu agente puede usarlo.</li>
       <li><strong>Empieza con el stack m&aacute;s peque&ntilde;o que responda la pregunta</strong> y a&ntilde;ade gobierno antes que potencia.</li>
     </ul>
@@ -989,7 +1088,7 @@ docs/
   <div class="slide-content" style="align-items:center;text-align:center;justify-content:center;max-width:min(92vw,860px);margin:0 auto;">
     <div class="kicker reveal" style="color:var(--accent);">Pr&oacute;xima clase</div>
     <h2 class="reveal" style="font-size:clamp(1.9rem,5.2vw,3.4rem);margin-top:0.6rem;max-width:20ch;">De OLTP a un data warehouse, <em>con agentes.</em></h2>
-    <p class="sub reveal" style="margin-top:clamp(0.8rem,1.8vh,1.3rem);max-width:640px;">Hoy viste el agente responder sobre un warehouse que ya exist&iacute;a. La pr&oacute;xima clase lo construimos desde la app en Postgres: extraer, modelar, documentar y exponer por MCP. Con un agente de c&oacute;digo haciendo el trabajo y nosotros revisando. Migraci&oacute;n &rarr; uso.</p>
+    <p class="sub reveal" style="margin-top:clamp(0.8rem,1.8vh,1.3rem);max-width:640px;">Hoy recogimos datos de la sala y los consultamos directamente en D1. La pr&oacute;xima clase construimos la separaci&oacute;n que faltaba: desde una app de ejemplo en Postgres a un warehouse en DuckDB. Extraer, modelar, documentar y exponer por MCP con acceso de solo lectura.</p>
     <div class="stream reveal" style="margin-top:clamp(1rem,2.4vh,1.6rem);">
       <div class="stream-rail">
         <span class="node src">Postgres</span>

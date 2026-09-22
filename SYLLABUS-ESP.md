@@ -2,7 +2,7 @@
 
 ## Sobre el curso
 
-Curso práctico para perfiles de datos (analistas, ingenieros de datos, analytics engineers, científicos de datos y responsables de equipos de datos) que quieren trabajar con LLMs y agentes en serio: no solo "preguntarle al chat", sino preparar el contexto, configurar el harness, conectar agentes a sus sistemas de datos con garantías y medir si funcionan.
+Curso práctico para perfiles de datos (analistas, ingenieros de datos, analytics engineers, científicos de datos y responsables de equipos de datos) que quieren trabajar con LLMs y agentes en producción: preparación de contexto, configuración del harness, conectar agentes a sus sistemas de datos con garantías y medir si funcionan.
 
 Doce sesiones en cinco bloques: fundamentos y casos reales, interfaces de trabajo con agentes, construcción de productos de datos, evals y seguridad, y proyecto final.
 
@@ -32,10 +32,9 @@ Requisito: SQL intermedio y nociones de Python. No hace falta experiencia previa
 
 ### Requisitos y herramientas
 
-- Entorno: terminal, VS Code o Cursor, git, `uv` para Python.
+- Entorno: terminal, VS Code, Cursor o Devin, git, `uv` para python.
 - Datos: Postgres (local o Docker), DuckDB, cuenta gratuita de MotherDuck. Opcional: trial de Snowflake, BigQuery sandbox o Databricks Free Edition.
-- Modelos y agentes: al menos una suscripción a Claude, ChatGPT o Gemini; un agente de código (Claude Code, Codex CLI o Gemini CLI). Se indican alternativas gratuitas y modelos locales (Ollama) donde es viable.
-- Notebooks: marimo o Jupyter.
+- Modelos y agentes: ideal al menos una suscripción a Claude, ChatGPT o Gemini; un agente de código (Claude Code, Codex CLI o Gemini CLI). Se indican alternativas gratuitas y modelos locales (Ollama) donde es viable.
 
 ## Mapa del curso
 

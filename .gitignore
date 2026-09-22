@@ -1,0 +1,100 @@
+# Byte-compiled / optimized Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Native extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.env/
+
+# Test and coverage artifacts
+.coverage
+.coverage.*
+.pytest_cache/
+.tox/
+.nox/
+htmlcov/
+
+# Type checkers and linters
+.mypy_cache/
+.pyre/
+.pytype/
+.ruff_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# IDE and editor settings
+.vscode/
+.idea/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Data and document files
+*.csv
+*.pdf
+
+# Microsoft Office files
+~$*
+*.doc
+*.docx
+*.docm
+*.dot
+*.dotx
+*.dotm
+*.xls
+*.xlsx
+*.xlsm
+*.xlsb
+*.xlt
+*.xltx
+*.xltm
+*.xla
+*.xlam
+*.ppt
+*.pptx
+*.pptm
+*.pot
+*.potx
+*.potm
+*.pps
+*.ppsx
+*.ppsm
+*.ppa
+*.ppam
+*.pub
+*.vsd
+*.vsdx

@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 1 · Cómo ha cambiado el rol de datos en la era IA</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   IA PARA DATOS — "REDLINE MINIMAL" DESIGN SYSTEM
+   Light, monochrome ink-on-paper + a single signal red (#d23a26).
+   Switzer (grotesque) + Space Mono. Key terms = mono w/ red underline.
+   ============================================================ */
+:root{
+  --paper:#f7f6f2; --paper2:#eeede6; --ink:#1a1915; --ink-soft:#46443c; --muted:#928f84;
+  --rule:#e4e2da; --rule-strong:#ccc9be;
+  --accent:#d23a26; --accent-soft:rgba(210,58,38,0.10); --accent-dim:rgba(210,58,38,0.18);
+  --code-bg:#201e18;
+  --sans:'Switzer',-apple-system,sans-serif; --mono:'Space Mono',ui-monospace,monospace;
+  --dur:0.7s; --ease:cubic-bezier(.16,1,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+html,body{height:100%;overflow-x:hidden;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+/* ---- slide shell ---- */
+.slide{
+  width:100vw;height:100vh;height:100dvh;overflow:hidden;position:relative;scroll-snap-align:start;
+  display:flex;flex-direction:column;padding:clamp(1.3rem,3.5vw,3.3rem) clamp(1.4rem,5vw,4.5rem);
+}
+.slide-content{flex:1;display:flex;flex-direction:column;justify-content:center;max-height:100%;min-height:0;overflow:hidden}
+.slide.invert{background:var(--ink);color:var(--paper)}
+.slide.invert .sub{color:#b9b5a8}
+.slide.invert h1,.slide.invert h2,.slide.invert h3,.slide.invert .big-q{color:var(--paper)}
+.slide.invert .kicker,.slide.invert .crumb{color:#9a968b}
+.slide.invert .meta{color:#7c796f}
+.slide.invert hr.rule{border-color:rgba(255,255,255,0.10)}
+.slide.invert .callout.note{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.2)}
+.slide.invert .bullets li{color:#e7e3d8}
+.slide.invert .dtable td{color:#e7e3d8}.slide.invert .dtable th{color:#9a968b}
+.slide.invert .dtable th,.slide.invert .dtable td{border-color:rgba(255,255,255,0.12)}
+.slide.invert .arch-node{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.2)}
+.slide.invert .arch-node .an-title{color:var(--paper)}
+.slide.invert .arch-node .arch-line{color:#e7e3d8}
+.slide.invert .arch-node .arch-row{color:#e7e3d8}
+.slide.invert .arch-node .arch-foot{color:#9a968b}
+.slide.invert .arch-node .an-rule{border-color:rgba(255,255,255,0.18)}
+.slide.invert .arch-node.tgt{background:var(--accent-soft);border-color:var(--accent)}
+.slide.invert .arch-node.tgt .an-title{color:var(--accent)}
+.slide.invert .arch-node.tgt .arch-line{color:var(--paper)}
+
+/* ---- nav: slash breadcrumb (course progress) ---- */
+.crumbs{display:flex;flex-wrap:wrap;font-family:var(--mono);font-size:clamp(0.55rem,0.92vw,0.7rem);color:var(--muted);letter-spacing:0.03em}
+.crumb{padding-right:0.8em;margin-right:0.8em;border-right:1px solid var(--rule-strong)}
+.crumb:last-child{border-right:0;margin-right:0;padding-right:0}
+.crumb.on{color:var(--ink);font-weight:700;position:relative}
+.crumb.on::after{content:'';position:absolute;left:0;right:0.8em;bottom:-0.45em;height:2px;background:var(--accent)}
+
+/* ---- type ---- */
+.kicker{font-family:var(--mono);font-size:clamp(0.6rem,1vw,0.74rem);letter-spacing:0.16em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{font-family:var(--mono);font-size:clamp(0.58rem,0.95vw,0.72rem);letter-spacing:0.12em;text-transform:uppercase;color:var(--accent)}
+.section-marker{display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:clamp(0.55rem,0.9vw,0.7rem);
+  font-weight:700;text-transform:uppercase;letter-spacing:0.12em;padding-bottom:0.35rem;border-bottom:2px solid var(--accent);color:var(--accent);align-self:flex-start}
+h1{font-family:var(--sans);font-weight:600;line-height:0.98;letter-spacing:-0.025em;font-size:clamp(2.5rem,7.5vw,5.6rem);color:var(--ink)}
+h2{font-family:var(--sans);font-weight:600;line-height:1.05;letter-spacing:-0.015em;font-size:clamp(1.55rem,4.2vw,2.9rem);color:var(--ink)}
+h2 em,h1 em{font-style:italic;font-weight:500;color:var(--accent)}
+h3{font-family:var(--sans);font-weight:600;font-size:clamp(1rem,2.2vw,1.5rem);letter-spacing:-0.01em}
+.sub{font-family:var(--sans);font-weight:400;font-size:clamp(0.84rem,1.5vw,1.08rem);color:var(--ink-soft);max-width:640px;line-height:1.6}
+.lede{font-family:var(--sans);font-weight:500;font-size:clamp(0.95rem,1.8vw,1.3rem);color:var(--ink);line-height:1.4}
+.label{font-family:var(--mono);font-size:clamp(0.55rem,0.9vw,0.7rem);font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted)}
+
+/* ---- signature: key term = mono + red underline (NOT a pill) ---- */
+.term{font-family:var(--mono);font-size:0.84em;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:0.02em;white-space:nowrap}
+.slide.invert .term{color:var(--paper)}
+.term.danger{color:var(--accent)}
+.hl{background:var(--accent-soft);color:var(--accent);padding:0.04em 0.32em;border-radius:2px;font-weight:600}
+.ink-mono{font-family:var(--mono);font-size:0.88em;background:rgba(0,0,0,0.06);padding:0.05em 0.35em;border-radius:2px}
+.slide.invert .ink-mono{background:rgba(255,255,255,0.1)}
+
+/* ---- bullets ---- */
+.bullets{list-style:none;display:flex;flex-direction:column;gap:clamp(0.3rem,0.7vh,0.5rem)}
+.bullets li{font-family:var(--sans);font-size:clamp(0.74rem,1.25vw,0.94rem);color:var(--ink);line-height:1.45;padding-left:1.35em;text-indent:-1.35em}
+.bullets li::before{content:'\2014';color:var(--accent);font-weight:700;margin-right:0.55em}
+.bullets li strong{font-weight:600}
+
+/* ---- columns ---- */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1rem,2.5vw,2rem);flex:1;min-height:0}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(0.7rem,1.6vw,1.3rem);width:100%}
+@media(max-width:700px){.two-col{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}}
+.col{display:flex;flex-direction:column;gap:clamp(0.3rem,0.7vh,0.55rem);min-height:0}
+.col-label{font-family:var(--mono);font-size:clamp(0.55rem,0.85vw,0.68rem);font-weight:700;text-transform:uppercase;letter-spacing:0.06em}
+.grid3 .arch-row span:last-child{text-align:right}
+
+/* ---- big question ---- */
+.big-q{font-family:var(--sans);font-weight:600;font-size:clamp(1.6rem,4.4vw,3.2rem);line-height:1.12;letter-spacing:-0.02em;color:var(--ink);max-width:20ch}
+.big-q .term{font-size:0.62em;vertical-align:0.12em}
+
+/* ---- live rail: question → agent → warehouse (packets = context, SQL, answer) ---- */
+.stream{margin-top:clamp(1rem,2.6vh,1.8rem);max-width:560px}
+.stream-rail{display:flex;align-items:center;gap:clamp(0.5rem,1.4vw,1rem)}
+.stream .node{font-family:var(--mono);font-size:clamp(0.55rem,0.9vw,0.7rem);font-weight:700;letter-spacing:0.03em;
+  color:var(--accent);border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:4px;padding:0.3em 0.6em;white-space:nowrap}
+.stream .node.src{position:relative}
+.stream .node.src::after{content:'';position:absolute;inset:-4px;border:1.5px solid var(--accent);border-radius:7px;opacity:0;animation:srcPulse 2.4s var(--ease) infinite}
+.stream .rail{position:relative;flex:1;height:2px;background:var(--accent)}
+.stream .rail::after{content:'';position:absolute;right:-1px;top:50%;transform:translateY(-50%);
+  border-left:7px solid var(--accent);border-top:5px solid transparent;border-bottom:5px solid transparent}
+.stream .pkt{position:absolute;top:50%;left:0;width:clamp(15px,1.7vw,19px);height:clamp(15px,1.7vw,19px);
+  margin-left:calc(-0.5 * clamp(15px,1.7vw,19px));border-radius:4px;background:var(--accent);color:var(--paper);
+  font-family:var(--mono);font-weight:700;font-size:clamp(0.5rem,0.78vw,0.62rem);
+  display:flex;align-items:center;justify-content:center;opacity:0;animation:pktFlow 5.6s linear infinite}
+.stream .cap{font-family:var(--mono);font-size:clamp(0.55rem,0.9vw,0.68rem);color:var(--muted);margin-top:0.75em;letter-spacing:0.04em}
+/* ---- cover: faint scrolling agent trace (ambience, red timestamps) ---- */
+.trace-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.trace-bg .trace-col{position:absolute;top:0;left:0;right:0;padding-left:clamp(1.4rem,5vw,4.5rem);
+  font-family:var(--mono);font-size:clamp(0.62rem,1.05vw,0.82rem);white-space:nowrap;color:var(--ink);
+  opacity:0.06;animation:traceScroll 32s linear infinite}
+.trace-bg .trace-col > span{display:block;margin-bottom:clamp(0.4rem,1vh,0.78rem)}
+.trace-bg .ts{color:var(--accent)}.trace-bg .arr{color:var(--accent)}
+.trace-bg::before,.trace-bg::after{content:'';position:absolute;left:0;right:0;height:20%;z-index:1}
+.trace-bg::before{top:0;background:linear-gradient(var(--paper),transparent)}
+.trace-bg::after{bottom:0;background:linear-gradient(transparent,var(--paper))}
+
+/* ---- callout ---- */
+.callout{display:flex;gap:clamp(0.4rem,0.9vw,0.65rem);padding:clamp(0.4rem,0.9vh,0.7rem) clamp(0.6rem,1.2vw,1rem);
+  border-radius:4px;border-left:3px solid;flex-shrink:0}
+.callout .ico{flex-shrink:0;width:clamp(0.95rem,1.4vw,1.15rem);height:clamp(0.95rem,1.4vw,1.15rem);margin-top:0.05em}
+.callout .ctxt{font-family:var(--sans);font-size:clamp(0.66rem,1.1vw,0.85rem);line-height:1.5;color:var(--ink)}
+.slide.invert .callout .ctxt{color:#e7e3d8}
+.callout.note{background:var(--paper2);border-color:var(--rule-strong)}
+.callout.danger{background:var(--accent-soft);border-color:var(--accent)}
+.callout.proof{background:var(--paper2);border-color:var(--ink)}
+
+/* ---- agent prompt (terminal-style box) ---- */
+.prompt{background:var(--code-bg);border:1px solid rgba(255,255,255,0.08);border-left:3px solid var(--accent);border-radius:5px;padding:clamp(0.42rem,0.95vh,0.68rem) clamp(0.7rem,1.4vw,1.05rem)}
+.prompt .plabel{display:block;font-family:var(--mono);font-size:clamp(0.48rem,0.75vw,0.6rem);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:0.3rem}
+.prompt .pcmd{display:block;font-family:var(--mono);font-size:clamp(0.6rem,1vw,0.78rem);color:#d8d4c8;line-height:1.7}
+.prompt .pcmd::before{content:'\276F  ';color:var(--accent);font-weight:700}
+
+/* ---- code ---- */
+.code-block{background:var(--code-bg);border:1px solid rgba(255,255,255,0.08);border-radius:5px;overflow:hidden;min-height:0}
+.code-header{display:flex;align-items:center;gap:5px;padding:clamp(0.28rem,0.5vh,0.4rem) clamp(0.5rem,1vw,0.8rem);
+  background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.06)}
+.code-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.18)}
+.code-label{margin-left:auto;font-family:var(--mono);font-size:clamp(0.5rem,0.78vw,0.62rem);color:rgba(255,255,255,0.38)}
+.code-body{padding:clamp(0.5rem,1vh,0.85rem) clamp(0.7rem,1.3vw,1.1rem);font-family:var(--mono);
+  font-size:clamp(0.55rem,0.92vw,0.72rem);line-height:1.62;color:#d8d4c8;white-space:pre;overflow:hidden;text-align:left}
+.c{color:#76726a;font-style:italic}.k{color:#8fb3c7}.s{color:#c7a06a}.fn{color:#e6e1d4}
+.v{color:#b9c4cb}.g{color:#c7a06a}.n{color:#9ec1a8}.r{color:#e8604c;font-weight:700}.cm{color:#76726a}
+
+/* ---- HTML architecture diagram (overlap-proof; real boxes, content-sized center) ---- */
+.archviz{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:clamp(0.6rem,2vw,1.7rem);
+  width:100%;max-width:900px;margin:0 auto}
+.arch-node{min-width:0;border:1.5px solid var(--rule-strong);border-radius:8px;background:var(--paper2);
+  padding:clamp(0.55rem,1.3vh,0.95rem) clamp(0.7rem,1.5vw,1.15rem);display:flex;flex-direction:column;gap:0.3rem}
+.arch-node.tgt{border-color:var(--accent);background:var(--accent-soft)}
+.an-title{font-family:var(--mono);font-weight:700;font-size:clamp(0.56rem,0.95vw,0.74rem);letter-spacing:0.03em;text-align:center;color:var(--ink)}
+.arch-node.tgt .an-title{color:var(--accent)}
+.an-rule{border:0;border-top:1px solid var(--rule-strong);opacity:.6;margin:0.12rem 0 0.22rem}
+.arch-row{display:flex;justify-content:space-between;gap:0.8rem;font-family:var(--mono);font-size:clamp(0.56rem,0.98vw,0.74rem);color:var(--ink)}
+.arch-row .num{color:var(--muted);white-space:nowrap}
+.arch-line{font-family:var(--mono);font-size:clamp(0.56rem,0.98vw,0.74rem);color:var(--ink);line-height:1.5}
+.arch-foot{margin-top:0.32rem;font-family:var(--mono);font-size:clamp(0.5rem,0.84vw,0.64rem);font-style:italic;color:var(--muted);text-align:center}
+.arch-conn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.4rem;padding:0 clamp(0.1rem,0.8vw,0.5rem)}
+.ac-top{font-family:var(--mono);font-size:clamp(0.5rem,0.85vw,0.66rem);color:var(--accent);white-space:nowrap;letter-spacing:0.02em}
+.ac-arrow{align-self:stretch;height:2px;background:var(--accent);position:relative;min-width:clamp(64px,8vw,110px)}
+.ac-arrow::after{content:'';position:absolute;right:-1px;top:50%;transform:translateY(-50%);
+  border-left:7px solid var(--accent);border-top:5px solid transparent;border-bottom:5px solid transparent}
+.ac-sub{font-family:var(--mono);font-size:clamp(0.46rem,0.78vw,0.6rem);color:var(--muted);white-space:nowrap}
+@media(max-width:680px){
+  .archviz{grid-template-columns:1fr;gap:0.6rem}
+  .ac-arrow{min-width:0;width:2px;height:26px;align-self:center}
+  .ac-arrow::after{right:auto;left:50%;top:auto;bottom:-1px;transform:translateX(-50%);
+    border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--accent);border-bottom:0}
+}
+
+/* ---- table ---- */
+.dtable{width:100%;border-collapse:collapse}
+.dtable th,.dtable td{font-family:var(--sans);font-size:clamp(0.62rem,1.05vw,0.84rem);
+  padding:clamp(0.22rem,0.5vh,0.42rem) clamp(0.4rem,0.9vw,0.75rem);text-align:left;border-bottom:1px solid var(--rule)}
+.dtable th{font-family:var(--mono);font-weight:700;text-transform:uppercase;letter-spacing:0.05em;font-size:clamp(0.5rem,0.78vw,0.62rem);color:var(--muted)}
+.dtable td.num,.dtable th.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+.dtable tr:last-child td{border-bottom:0}
+.dtable .hot{color:var(--accent);font-weight:600}
+.dtable tr.hot td{color:var(--accent);font-weight:600}
+
+/* ---- big stat ---- */
+.stat{font-family:var(--mono);font-weight:700;font-size:clamp(1.5rem,3.6vw,2.7rem);line-height:1;color:var(--ink)}
+.stat.red{color:var(--accent)}
+.stat-label{font-family:var(--mono);font-size:clamp(0.55rem,0.85vw,0.68rem);color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+
+/* ---- footer meta ---- */
+.meta{display:flex;justify-content:space-between;align-items:center;gap:1rem;font-family:var(--mono);
+  font-size:clamp(0.5rem,0.82vw,0.64rem);color:var(--muted);letter-spacing:0.03em}
+.meta span:nth-child(2){text-align:right;opacity:0.8}
+hr.rule{border:0;border-top:1px solid var(--rule);margin:0}
+
+/* ---- reveal animation ---- */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
+.slide.visible .reveal{opacity:1;transform:none}
+.slide.visible .reveal:nth-child(1){transition-delay:.05s}
+.slide.visible .reveal:nth-child(2){transition-delay:.12s}
+.slide.visible .reveal:nth-child(3){transition-delay:.19s}
+.slide.visible .reveal:nth-child(4){transition-delay:.26s}
+.slide.visible .reveal:nth-child(5){transition-delay:.33s}
+.slide.visible .reveal:nth-child(6){transition-delay:.40s}
+.slide.visible .reveal:nth-child(7){transition-delay:.47s}
+
+/* ---- chrome: progress bar, key hint ---- */
+.progress-bar{position:fixed;bottom:0;left:0;height:2px;background:var(--accent);z-index:200;width:0;transition:width .35s ease}
+.kbd-hint{position:fixed;bottom:clamp(0.5rem,1.2vh,0.9rem);left:50%;transform:translateX(-50%);font-family:var(--mono);
+  font-size:clamp(0.42rem,0.65vw,0.52rem);color:var(--muted);opacity:0.5;z-index:200}
+@media(max-height:600px){.kbd-hint{display:none}}
+@media (prefers-reduced-motion:reduce){.reveal{transition-duration:.2s}html{scroll-behavior:auto}}
+
+/* ---- spoiler: demo results stay blurred until the room predicts ---- */
+.spoiler{position:relative;cursor:pointer}
+.spoiler>*{filter:blur(9px);transition:filter .5s var(--ease)}
+.spoiler::after{content:'predice primero \00b7 clic o pulsa R';position:absolute;inset:0;z-index:2;
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);
+  font-size:clamp(0.6rem,1vw,0.78rem);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent)}
+.spoiler.revealed>*{filter:none}
+.spoiler.revealed::after{display:none}
+
+/* ---- title (slide 1) opening animation + shared stream motion ---- */
+@keyframes titleRise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes drawUnderline{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes traceScroll{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+@keyframes pktFlow{
+  0%{left:0;opacity:0;transform:translateY(-50%) scale(.4)}
+  9%{opacity:1;transform:translateY(-50%) scale(1)}
+  88%{opacity:1;transform:translateY(-50%) scale(1)}
+  100%{left:100%;opacity:0;transform:translateY(-50%) scale(.4)}
+}
+@keyframes srcPulse{0%{opacity:.55;transform:scale(1)}70%,100%{opacity:0;transform:scale(1.55)}}
+#s1 .trace-bg,#s1 .crumbs,#s1 .slide-content,#s1 hr.rule,#s1 .meta{position:relative}
+#s1 .crumbs,#s1 .slide-content,#s1 hr.rule,#s1 .meta{z-index:1}
+#s1 .reveal{opacity:0;animation:titleRise .85s var(--ease) forwards}
+#s1 .crumbs.reveal{animation-delay:.05s}
+#s1 .eyebrow.reveal{animation-delay:.25s}
+#s1 h1.reveal{animation-delay:.4s}
+#s1 .sub.reveal{animation-delay:.7s}
+#s1 .stream.reveal{animation-delay:1.05s}
+#s1 .t-data{position:relative;white-space:nowrap}
+#s1 .t-data::after{content:'';position:absolute;left:0;right:-.04em;bottom:.04em;height:.085em;background:var(--accent);transform:scaleX(0);transform-origin:left;animation:drawUnderline .7s var(--ease) 1.2s forwards}
+@media (prefers-reduced-motion:reduce){
+  #s1 .reveal,.trace-bg .trace-col,.stream .pkt,.stream .node.src::after,#s1 .t-data::after{animation:none}
+  #s1 .reveal{opacity:1;transform:none}#s1 .t-data::after{transform:scaleX(1)}
+  .stream .pkt{opacity:1;left:50%}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<span class="kbd-hint">&uarr; &darr; navegar &middot; R revelar</span>
+
+<!-- ════════════════════════════════════════════════════════════
+     CLASE 1 · CÓMO HA CAMBIADO EL ROL DE DATOS EN LA ERA IA
+     ════════════════════════════════════════════════════════════ -->
+
+<!-- ─── 01 · PORTADA ───────────────────────────────────── -->
+<section class="slide visible" id="s1">
+  <div class="trace-bg" aria-hidden="true">
+    <div class="trace-col">
+      <span><span class="ts">09:41:02.118</span>  READ_DOMAIN_DOC     metrics/clientes_activos.md</span>
+      <span><span class="ts">09:41:02.402</span>  READ_SEMANTIC_VIEW  sem.clientes <span class="arr">&rarr;</span> activo := pedido en 30d</span>
+      <span><span class="ts">09:41:02.977</span>  EXECUTE_SQL         SELECT count(DISTINCT customer_id) ... WHERE mes = '2026-03'</span>
+      <span><span class="ts">09:41:03.240</span>  ROWS_RETURNED       1 fila &middot; 12 ms</span>
+      <span><span class="ts">09:41:03.311</span>  SYNTHESIZE_ANSWER   4.812 clientes activos <span class="arr">&rarr;</span> fuente: fct_pedidos v14</span>
+      <span><span class="ts">09:41:05.006</span>  READ_DOMAIN_DOC     metrics/ingresos_netos.md</span>
+      <span><span class="ts">09:41:05.518</span>  READ_SEMANTIC_VIEW  sem.ingresos <span class="arr">&rarr;</span> neto := bruto - devoluciones(45d)</span>
+      <span><span class="ts">09:41:06.090</span>  EXECUTE_SQL         SELECT sum(importe_neto) ... GROUP BY mes</span>
+      <span><span class="ts">09:41:06.421</span>  ROWS_RETURNED       12 filas &middot; 31 ms</span>
+      <span><span class="ts">09:41:06.503</span>  DENIED              tabla pii.clientes_raw <span class="arr">&rarr;</span> rol analytics_ro</span>
+      <span><span class="ts">09:41:06.611</span>  SYNTHESIZE_ANSWER   serie mensual <span class="arr">&rarr;</span> supuestos: 2</span>
+      <span><span class="ts">09:41:08.002</span>  TRACE_SAVED         run_7f3a &middot; modelo, prompt, tools, hash del contexto</span>
+      <span><span class="ts">09:41:02.118</span>  READ_DOMAIN_DOC     metrics/clientes_activos.md</span>
+      <span><span class="ts">09:41:02.402</span>  READ_SEMANTIC_VIEW  sem.clientes <span class="arr">&rarr;</span> activo := pedido en 30d</span>
+      <span><span class="ts">09:41:02.977</span>  EXECUTE_SQL         SELECT count(DISTINCT customer_id) ... WHERE mes = '2026-03'</span>
+      <span><span class="ts">09:41:03.240</span>  ROWS_RETURNED       1 fila &middot; 12 ms</span>
+      <span><span class="ts">09:41:03.311</span>  SYNTHESIZE_ANSWER   4.812 clientes activos <span class="arr">&rarr;</span> fuente: fct_pedidos v14</span>
+      <span><span class="ts">09:41:05.006</span>  READ_DOMAIN_DOC     metrics/ingresos_netos.md</span>
+      <span><span class="ts">09:41:05.518</span>  READ_SEMANTIC_VIEW  sem.ingresos <span class="arr">&rarr;</span> neto := bruto - devoluciones(45d)</span>
+      <span><span class="ts">09:41:06.090</span>  EXECUTE_SQL         SELECT sum(importe_neto) ... GROUP BY mes</span>
+      <span><span class="ts">09:41:06.421</span>  ROWS_RETURNED       12 filas &middot; 31 ms</span>
+      <span><span class="ts">09:41:06.503</span>  DENIED              tabla pii.clientes_raw <span class="arr">&rarr;</span> rol analytics_ro</span>
+      <span><span class="ts">09:41:06.611</span>  SYNTHESIZE_ANSWER   serie mensual <span class="arr">&rarr;</span> supuestos: 2</span>
+      <span><span class="ts">09:41:08.002</span>  TRACE_SAVED         run_7f3a &middot; modelo, prompt, tools, hash del contexto</span>
+    </div>
+  </div>
+  <div class="crumbs reveal">
+    <span class="crumb on">01 El rol de datos</span>
+    <span class="crumb">02 OLTP &rarr; DW</span>
+    <span class="crumb">03 Flujos ag&eacute;nticos</span>
+    <span class="crumb">04 Chats</span>
+  </div>
+  <div class="slide-content">
+    <div class="eyebrow reveal" style="margin-bottom:0.8rem;">IA para datos &middot; Clase 1</div>
+    <h1 class="reveal">Producir an&aacute;lisis es barato. <span class="t-data">Acordar</span> qu&eacute; es verdad, no.</h1>
+    <p class="sub reveal" style="margin-top:clamp(0.9rem,2vh,1.4rem);">Un agente responde hoy en treinta segundos lo que antes tardaba un sprint. Lo que no responde solo es <em>qu&eacute; significa</em> &ldquo;cliente activo&rdquo;, <em>qu&eacute; tablas</em> puede tocar y <em>c&oacute;mo sabemos</em> que acert&oacute;. Esta clase es sobre c&oacute;mo cambi&oacute; el trabajo de datos cuando eso pas&oacute; a ser lo dif&iacute;cil.</p>
+    <div class="stream reveal">
+      <div class="stream-rail">
+        <span class="node src">pregunta</span>
+        <span class="rail">
+          <span class="pkt" style="animation-delay:0s">C</span>
+          <span class="pkt" style="animation-delay:-1.4s">SQL</span>
+          <span class="pkt" style="animation-delay:-2.8s">R</span>
+          <span class="pkt" style="animation-delay:-4.2s">C</span>
+        </span>
+        <span class="node dst">warehouse</span>
+      </div>
+      <div class="cap">contexto &rarr; SQL &rarr; respuesta &middot; con rastro, o no cuenta</div>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>IA PARA DATOS &middot; DE LOS CHATS A LOS AGENTES</span><span>Clase 1 &middot; C&oacute;mo ha cambiado el rol de datos en la era IA</span></div>
+</section>
+
+<!-- ─── 02 · AGENDA ────────────────────────────────────── -->
+<section class="slide" id="s2">
+  <div class="slide-content" style="max-width:min(92vw,920px);margin:0 auto;">
+    <div class="section-marker reveal">Hoy</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Seis paradas y una <em>demo.</em></h2>
+    <p class="sub reveal" style="margin-top:0.4rem;max-width:680px;">Primero qu&eacute; cambi&oacute; y por qu&eacute;. Luego el vocabulario m&iacute;nimo para el resto del curso. Al final, un agente respondiendo sobre un warehouse real desde tu port&aacute;til.</p>
+    <table class="dtable reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);max-width:820px;">
+      <thead><tr><th style="width:3.5rem;">#</th><th>Parada</th><th>La pregunta que responde</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td>C&oacute;mo ha cambiado el rol</td><td>Cuatro eras del stack de datos y qu&eacute; se volvi&oacute; escaso en cada una</td></tr>
+        <tr><td class="num">2</td><td>Nuevas habilidades en demanda</td><td>Qu&eacute; te piden hoy que no te ped&iacute;an hace dos a&ntilde;os</td></tr>
+        <tr><td class="num">3</td><td>Conceptos fundamentales</td><td>OLTP vs OLAP &middot; DB vs DW vs Lake &middot; siete palabras de IA</td></tr>
+        <tr><td class="num">4</td><td>Sistemas preparados para agentes</td><td>Siete criterios que puedes comprobar</td></tr>
+        <tr><td class="num">5</td><td>Cu&aacute;ndo elegir cada uno</td><td>Seis preguntas antes de mirar precios</td></tr>
+        <tr><td class="num">6</td><td>Stacks para trabajar con LLMs</td><td>Tres configuraciones que funcionan hoy</td></tr>
+        <tr class="hot"><td class="num">&#9654;</td><td>Demo</td><td>Un agente sobre un warehouse local, v&iacute;a MCP</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>AGENDA</span><span>rol &rarr; habilidades &rarr; conceptos &rarr; sistemas &rarr; elegir &rarr; stacks &rarr; demo</span></div>
+</section>
+
+<!-- ─── 03 · DIVISOR PARTE 1 ───────────────────────────── -->
+<section class="slide invert" id="s3">
+  <div class="slide-content" style="align-items:center;text-align:center;justify-content:center;max-width:min(92vw,820px);margin:0 auto;">
+    <div class="kicker reveal" style="color:var(--accent);">Parte 1</div>
+    <h2 class="reveal" style="font-size:clamp(1.9rem,5.2vw,3.4rem);margin-top:0.6rem;max-width:18ch;">Cuatro eras, cuatro <em>recursos escasos.</em></h2>
+    <p class="sub reveal" style="margin-top:clamp(0.8rem,1.8vh,1.3rem);max-width:600px;">Cada salto del stack de datos quit&oacute; una limitaci&oacute;n y cre&oacute; otra. Para entender qu&eacute; se pide hoy hay que ver qu&eacute; era lo dif&iacute;cil en cada &eacute;poca.</p>
+    <div class="reveal" style="display:flex;gap:clamp(1.2rem,4vw,3rem);flex-wrap:wrap;justify-content:center;margin-top:clamp(1rem,2.4vh,1.6rem);">
+      <div><div class="stat" style="color:var(--paper);">2013</div><div class="stat-label">silos</div></div>
+      <div><div class="stat" style="color:var(--paper);">2016</div><div class="stat-label">cloud DW</div></div>
+      <div><div class="stat" style="color:var(--paper);">2020</div><div class="stat-label">modern data stack</div></div>
+      <div><div class="stat red">2026</div><div class="stat-label">post-IA</div></div>
+    </div>
+  </div>
+  <div class="meta" style="position:absolute;bottom:clamp(0.8rem,2vh,1.4rem);left:0;right:0;padding:0 clamp(1.4rem,5vw,4.5rem);"><span>PARTE 1 &middot; C&Oacute;MO HA CAMBIADO EL ROL</span><span>basado en Macomber, &ldquo;The Post-AI Data Stack&rdquo;</span></div>
+</section>
+
+<!-- ─── 04 · ~2013 · PRE-MODERNO ───────────────────────── -->
+<section class="slide" id="s4">
+  <div class="slide-content" style="max-width:min(92vw,920px);margin:0 auto;">
+    <div class="section-marker reveal">~2013 &middot; stack pre-moderno</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Solo pod&iacute;as preguntar lo que <em>cab&iacute;a en un servidor.</em></h2>
+    <p class="sub reveal" style="margin-top:0.4rem;max-width:720px;">SQL Server on-prem, un DBA que conduce al datacenter para a&ntilde;adir discos. Tres fricciones brutales que hoy nos parecen absurdas:</p>
+    <div class="reveal" style="display:flex;gap:clamp(1.2rem,4vw,3rem);flex-wrap:wrap;margin-top:clamp(0.7rem,1.8vh,1.2rem);">
+      <div><div class="stat">2 BDs</div><div class="stat-label">pedidos y pagos, sin poder cruzarse</div></div>
+      <div><div class="stat red">0 JSON</div><div class="stat-label">el clickstream ni se guardaba</div></div>
+      <div><div class="stat">~100M</div><div class="stat-label">filas: la query tumbaba producci&oacute;n</div></div>
+    </div>
+    <div class="callout note reveal" style="margin-top:clamp(0.7rem,1.6vh,1.1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+      <span class="ctxt"><strong>Una pregunta razonable, imposible.</strong> &ldquo;&iquest;Los clientes con tarjeta premium son menos sensibles al precio?&rdquo; Pagos en un servidor, pedidos en otro, sin clickstream. El an&aacute;lisis no era dif&iacute;cil: no exist&iacute;a d&oacute;nde hacerlo.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>~2013</span><span>recurso escaso: poder consultar</span></div>
+</section>
+
+<!-- ─── 05 · ~2016 · CLOUD DATA WAREHOUSE ──────────────── -->
+<section class="slide" id="s5">
+  <div class="slide-content" style="max-width:min(92vw,920px);margin:0 auto;">
+    <div class="section-marker reveal">~2016 &middot; cloud data warehouse</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Todos los datos de la empresa, <em>en un sitio.</em></h2>
+    <p class="sub reveal" style="margin-top:0.4rem;max-width:720px;">Snowflake, Redshift, BigQuery. Almacenamiento y c&oacute;mputo separados y el&aacute;sticos; semiestructurado nativo. La pregunta de la tarjeta premium pasa de imposible a trivial.</p>
+    <ul class="bullets reveal" style="margin-top:clamp(0.5rem,1.2vh,0.9rem);max-width:760px;">
+      <li><strong>Almacenamiento sin l&iacute;mite pr&aacute;ctico.</strong> &ldquo;Todo en un solo lugar&rdquo; deja de ser un deseo y pasa a ser una factura mensual.</li>
+      <li><strong>C&oacute;mputo aislado y horizontal.</strong> Tu an&aacute;lisis de cien millones de filas ya no rompe el informe financiero de al lado.</li>
+      <li><strong>JSON como ciudadano de primera.</strong> El clickstream se guarda y se consulta. Nace la anal&iacute;tica de producto tal y como la conocemos.</li>
+    </ul>
+    <div class="callout proof reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      <span class="ctxt">Un buen cient&iacute;fico de datos le dice a su empresa qu&eacute; es lo que m&aacute;s importa. Eso solo es posible si puede usar <strong>todos</strong> los datos. Esta era lo hizo posible; no lo hizo f&aacute;cil.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>~2016</span><span>recurso escaso: llegar a todo</span></div>
+</section>
+
+<!-- ─── 06 · ~2020 · MODERN DATA STACK ─────────────────── -->
+<section class="slide" id="s6">
+  <div class="slide-content" style="max-width:min(92vw,940px);margin:0 auto;">
+    <div class="section-marker reveal">~2020 &middot; modern data stack</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">De <em>reportar</em> a <em>operar.</em></h2>
+    <p class="sub reveal" style="margin-top:0.4rem;max-width:720px;">ETL gestionado (un clic y pagas a fin de mes), dbt para modelar en SQL, y Reverse ETL para devolver el resultado a los sistemas donde pasa el negocio. Un head of data con una tarjeta de cr&eacute;dito ten&iacute;a reporting antes de comer.</p>
+    <div class="archviz reveal" style="margin-top:clamp(0.8rem,2vh,1.3rem);">
+      <div class="arch-node"><div class="an-title">FUENTES</div><hr class="an-rule"><div class="arch-line" style="text-align:center;">app &middot; pagos &middot; CRM<br>ads &middot; soporte &middot; clickstream</div><div class="arch-foot">cualquier SaaS, sin pedir a ingenier&iacute;a</div></div>
+      <div class="arch-conn"><div class="ac-top">ETL gestionado</div><div class="ac-arrow"></div><div class="ac-sub">Fivetran, Airbyte</div></div>
+      <div class="arch-node tgt"><div class="an-title">WAREHOUSE + dbt</div><hr class="an-rule"><div class="arch-line" style="text-align:center;">modelos &middot; tests &middot; docs<br>&rarr; BI &middot; notebooks<br>&rarr; Reverse ETL a CRM, email, producto</div><div class="arch-foot">el an&aacute;lisis dispara acciones</div></div>
+    </div>
+    <div class="callout note reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M4 17l6-6-6-6M12 19h8"/></svg>
+      <span class="ctxt">La conclusi&oacute;n &ldquo;los clientes premium son un 12% menos sensibles al precio&rdquo; deja de ser una diapositiva y pasa a ser un segmento en Salesforce y un precio distinto en la web. <strong>Lo que quedaba fuera:</strong> llamadas, correos, documentos, c&oacute;digo. Lo no estructurado.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>~2020</span><span>recurso escaso: convertir insight en acci&oacute;n</span></div>
+</section>
+
+<!-- ─── 07 · ~2026 · POST-IA ───────────────────────────── -->
+<section class="slide" id="s7">
+  <div class="slide-content" style="max-width:min(92vw,920px);margin:0 auto;">
+    <div class="section-marker reveal">~2026 &middot; stack post-IA</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Producir un an&aacute;lisis cuesta <em>casi cero.</em></h2>
+    <p class="sub reveal" style="margin-top:0.4rem;max-width:720px;">Agentes de c&oacute;digo, bots en Slack, chats con conectores al warehouse. Cualquiera responde su propia pregunta y construye su propia narrativa. Con una definici&oacute;n ligeramente distinta cada uno.</p>
+    <div class="reveal" style="display:flex;gap:clamp(1.2rem,4vw,3rem);flex-wrap:wrap;margin-top:clamp(0.7rem,1.8vh,1.2rem);">
+      <div><div class="stat">30 s</div><div class="stat-label">de pregunta a dashboard</div></div>
+      <div><div class="stat red">N</div><div class="stat-label">definiciones de &ldquo;cliente activo&rdquo;</div></div>
+      <div><div class="stat">&iquest;?</div><div class="stat-label">cu&aacute;l es la correcta</div></div>
+    </div>
+    <div class="callout danger reveal" style="margin-top:clamp(0.7rem,1.6vh,1.1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+      <span class="ctxt"><strong>Antes el consenso ven&iacute;a de la escasez.</strong> Hacer un dashboard costaba semanas, as&iacute; que hab&iacute;a pocos, viv&iacute;an en carpetas que copiaban el organigrama y todo el mundo miraba el mismo n&uacute;mero. Esa escasez desapareci&oacute;. El consenso que tra&iacute;a de regalo, tambi&eacute;n.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>~2026</span><span>recurso escaso: el consenso</span></div>
+</section>
+
+<!-- ─── 08 · LA TESIS ──────────────────────────────────── -->
+<section class="slide invert" id="s8">
+  <div class="slide-content" style="align-items:center;text-align:center;justify-content:center;max-width:min(92vw,860px);margin:0 auto;">
+    <div class="kicker reveal" style="color:var(--accent);">La tesis del curso</div>
+    <h2 class="reveal" style="font-size:clamp(1.9rem,5.2vw,3.4rem);margin-top:0.6rem;max-width:20ch;">La IA abarat&oacute; el an&aacute;lisis. No abarat&oacute; <em>acordar la realidad.</em></h2>
+    <p class="sub reveal" style="margin-top:clamp(0.8rem,1.8vh,1.3rem);max-width:640px;">El recurso escaso ya no es la capacidad de responder, sino que todas las respuestas coincidan. Y el consenso, a diferencia de la intuici&oacute;n, se puede <strong>dise&ntilde;ar, afirmar y medir</strong>. Ese es el hilo del curso: Clases 7, 10 y 11.</p>
+  </div>
+  <div class="meta" style="position:absolute;bottom:clamp(0.8rem,2vh,1.4rem);left:0;right:0;padding:0 clamp(1.4rem,5vw,4.5rem);"><span>TESIS</span><span>consenso: dise&ntilde;ado, no heredado</span></div>
+</section>
+
+<!-- ─── 09 · TABLA DE ERAS ─────────────────────────────── -->
+<section class="slide" id="s9">
+  <div class="slide-content" style="max-width:min(92vw,960px);margin:0 auto;">
+    <div class="section-marker reveal">Las cuatro eras, en una tabla</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Cada era quit&oacute; un l&iacute;mite y <em>cre&oacute; otro.</em></h2>
+    <table class="dtable reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <thead><tr><th>Era</th><th>Lo que desbloque&oacute;</th><th>Lo que pas&oacute; a ser escaso</th><th>Rol del equipo de datos</th></tr></thead>
+      <tbody>
+        <tr><td><span class="ink-mono">~2013</span> pre-moderno</td><td>SQL sobre lo que cab&iacute;a en un servidor</td><td>Poder consultar</td><td>Guardi&aacute;n del acceso</td></tr>
+        <tr><td><span class="ink-mono">~2016</span> cloud DW</td><td>Todos los datos, c&oacute;mputo el&aacute;stico, JSON</td><td>Llegar a todo</td><td>Analista de toda la empresa</td></tr>
+        <tr><td><span class="ink-mono">~2020</span> MDS</td><td>Cualquier fuente, resultado de vuelta al negocio</td><td>Convertir insight en acci&oacute;n</td><td>Operador</td></tr>
+        <tr class="hot"><td><span class="ink-mono">~2026</span> post-IA</td><td>An&aacute;lisis y dashboards a coste casi cero, para cualquiera</td><td>Consenso</td><td>Constructor de la realidad compartida</td></tr>
+      </tbody>
+    </table>
+    <div class="callout note reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M4 19V5M4 19h16M8 15l4-6 4 3 4-7"/></svg>
+      <span class="ctxt">Cada era ampli&oacute; el radio de acci&oacute;n del profesional de datos. La &uacute;ltima lo ampl&iacute;a otra vez: de <em>producir an&aacute;lisis</em> a construir la representaci&oacute;n de qu&eacute; es verdad, qu&eacute; importa y por qu&eacute;, sobre la que operan personas y agentes.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>CUATRO ERAS</span><span>consultar &rarr; llegar &rarr; actuar &rarr; acordar</span></div>
+</section>
+
+<!-- ─── 10 · COMODITIZADO vs REVALORIZADO ──────────────── -->
+<section class="slide" id="s10">
+  <div class="slide-content" style="max-width:min(92vw,940px);margin:0 auto;">
+    <div class="section-marker reveal">Qu&eacute; cambi&oacute; de precio</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Lo que se abarat&oacute; y lo que <em>se encareci&oacute;.</em></h2>
+    <div class="two-col reveal" style="margin-top:clamp(0.7rem,1.6vh,1.1rem);flex:unset;">
+      <div class="col">
+        <div class="col-label" style="color:var(--muted);">se comoditiza</div>
+        <ul class="bullets">
+          <li><strong>C&oacute;digo repetitivo.</strong> Extracciones, transformaciones, tests de esquema, DAGs.</li>
+          <li><strong>EDA inicial.</strong> Perfilar, contar nulos, describir distribuciones.</li>
+          <li><strong>Dashboards est&aacute;ndar.</strong> El de ventas por regi&oacute;n lo hace cualquiera en un minuto.</li>
+          <li><strong>Documentaci&oacute;n.</strong> Descripciones de tablas y columnas, generadas y revisadas.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="col-label" style="color:var(--accent);">se revaloriza</div>
+        <ul class="bullets">
+          <li><strong>Modelado.</strong> Nombrar bien el concepto de negocio, al grano correcto, a la primera.</li>
+          <li><strong>Sem&aacute;ntica.</strong> Que &ldquo;ingresos&rdquo; signifique una sola cosa para personas y m&aacute;quinas.</li>
+          <li><strong>Gobierno.</strong> Qui&eacute;n puede ver qu&eacute;, y que el agente lo herede.</li>
+          <li><strong>Criterio.</strong> Saber cu&aacute;ndo un n&uacute;mero correcto sali&oacute; por un camino equivocado.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout proof reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      <span class="ctxt">La IA amplifica lo bueno y lo malo de tu warehouse. Un modelo mal nombrado antes confund&iacute;a a un analista; ahora confunde a cada agente, en cada pregunta, sin que nadie lo vea.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>PRECIOS</span><span>barato: producir &middot; caro: significar</span></div>
+</section>
+
+<!-- ─── 11 · SIN TI EN LA SALA ─────────────────────────── -->
+<section class="slide" id="s11">
+  <div class="slide-content" style="max-width:min(92vw,900px);margin:0 auto;">
+    <div class="section-marker reveal">El cambio de trabajo</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">De producir an&aacute;lisis a <em>codificar criterio.</em></h2>
+    <p class="sub reveal" style="margin-top:0.4rem;max-width:720px;">Antes tu conocimiento viv&iacute;a en tu cabeza y en el SQL que escrib&iacute;as a mano. Ahora tiene que vivir en algo que un agente pueda leer antes de responder.</p>
+    <p class="lede reveal" style="margin-top:clamp(0.6rem,1.5vh,1rem);max-width:760px;">El test ya no es si haces un an&aacute;lisis excepcional. Es si cualquier agente, en cualquier interfaz, llega a la respuesta correcta <em>sin ti en la sala</em>.</p>
+    <ul class="bullets reveal" style="margin-top:clamp(0.5rem,1.2vh,0.9rem);max-width:760px;">
+      <li>De <strong>escribir SQL y pipelines</strong> a especificar, revisar y orquestar trabajo hecho por agentes.</li>
+      <li>De <strong>saber qu&eacute; significa</strong> &ldquo;cliente activo&rdquo; a dejarlo escrito donde el modelo lo lee.</li>
+      <li>De <strong>revisar el n&uacute;mero</strong> a evaluar tambi&eacute;n el camino: qu&eacute; tablas, qu&eacute; definici&oacute;n, qu&eacute; supuestos.</li>
+    </ul>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>EL TRABAJO</span><span>criterio &rarr; infraestructura</span></div>
+</section>
+
+<!-- ─── 12 · EL DASHBOARD ──────────────────────────────── -->
+<section class="slide" id="s12">
+  <div class="slide-content" style="max-width:min(92vw,920px);margin:0 auto;">
+    <div class="section-marker reveal">Un ejemplo concreto</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">El dashboard deja de ser <em>un destino.</em></h2>
+    <p class="sub reveal" style="margin-top:0.4rem;max-width:720px;">Nadie lo abre los lunes. Alguien le pregunta a su agente c&oacute;mo fue el lanzamiento, y el agente lo lee por &eacute;l. El dashboard sobrevive si es legible por m&aacute;quinas.</p>
+    <div class="archviz reveal" style="margin-top:clamp(0.8rem,2vh,1.3rem);">
+      <div class="arch-node"><div class="an-title">ANTES &middot; destino</div><hr class="an-rule"><div class="arch-line" style="text-align:center;">carpeta &rarr; dashboard &rarr; filtros<br>lo abres, lo miras, lo interpretas</div><div class="arch-foot">el valor est&aacute; en la pantalla</div></div>
+      <div class="arch-conn"><div class="ac-top">se reempaqueta</div><div class="ac-arrow"></div><div class="ac-sub">para personas y agentes</div></div>
+      <div class="arch-node tgt"><div class="an-title">AHORA &middot; repositorio de hechos</div><hr class="an-rule"><div class="arch-line" style="text-align:center;">definiciones &middot; SQL recuperable<br>valores cacheados &middot; owners &middot; procedencia</div><div class="arch-foot">el agente lo descompone y recombina</div></div>
+    </div>
+    <div class="callout note reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M4 4h16v16H4zM4 9h16M9 9v11"/></svg>
+      <span class="ctxt">Igual que un programa de TV hoy se ve en clips que alguien recort&oacute;, tu an&aacute;lisis se ver&aacute; en la respuesta de un agente que lo troce&oacute;. <strong>Tu trabajo es que el significado sobreviva a la edici&oacute;n.</strong> C&oacute;mo se publica un producto de datos para m&aacute;quinas: Clase 7.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>EL DASHBOARD</span><span>de pantalla a fuente</span></div>
+</section>
+
+<!-- ─── 13 · DIVISOR PARTE 2 ───────────────────────────── -->
+<section class="slide invert" id="s13">
+  <div class="slide-content" style="align-items:center;text-align:center;justify-content:center;max-width:min(92vw,820px);margin:0 auto;">
+    <div class="kicker reveal" style="color:var(--accent);">Parte 2</div>
+    <h2 class="reveal" style="font-size:clamp(1.9rem,5.2vw,3.4rem);margin-top:0.6rem;max-width:18ch;">Nuevas habilidades <em>en demanda.</em></h2>
+    <p class="sub reveal" style="margin-top:clamp(0.8rem,1.8vh,1.3rem);max-width:600px;">Si el trabajo cambi&oacute;, la oferta de empleo tambi&eacute;n. Dos trabajos y cuatro habilidades que aparecen en casi todas.</p>
+  </div>
+  <div class="meta" style="position:absolute;bottom:clamp(0.8rem,2vh,1.4rem);left:0;right:0;padding:0 clamp(1.4rem,5vw,4.5rem);"><span>PARTE 2 &middot; HABILIDADES</span><span>qu&eacute; te piden hoy</span></div>
+</section>
+
+<!-- ─── 14 · DOS TRABAJOS ──────────────────────────────── -->
+<section class="slide" id="s14">
+  <div class="slide-content" style="max-width:min(92vw,920px);margin:0 auto;">
+    <div class="section-marker reveal">El equipo de datos hoy</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Dos trabajos, <em>no uno.</em></h2>
+    <div class="archviz reveal" style="margin-top:clamp(0.8rem,2vh,1.3rem);grid-template-columns:1fr 1fr;max-width:860px;">
+      <div class="arch-node"><div class="an-title">1 &middot; QUE TODOS CONSTRUYAN</div><hr class="an-rule"><div class="arch-line">Que cualquiera en la empresa pueda responder, analizar y automatizar con datos e IA: con precisi&oacute;n, con potencia y sin esperar al equipo de datos.</div><div class="arch-foot">habilitar &middot; herramientas &middot; acceso</div></div>
+      <div class="arch-node tgt"><div class="an-title">2 &middot; UNA SOLA REALIDAD</div><hr class="an-rule"><div class="arch-line">Construir y defender la realidad &uacute;nica sobre la que opera la empresa: qu&eacute; es verdad, qu&eacute; importa y por qu&eacute;. Codificada para que la lean los agentes.</div><div class="arch-foot">definir &middot; gobernar &middot; medir</div></div>
+    </div>
+    <div class="callout danger reveal" style="margin-top:clamp(0.7rem,1.6vh,1.1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="9"/></svg>
+      <span class="ctxt">Los dos trabajos se tensan entre s&iacute;: cuanta m&aacute;s autonom&iacute;a das, m&aacute;s presi&oacute;n sobre la coherencia. Resolver esa tensi&oacute;n con infraestructura, no con reuniones, es el trabajo.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>DOS TRABAJOS</span><span>habilitar &middot; acordar</span></div>
+</section>
+
+<!-- ─── 15 · CUATRO HABILIDADES ────────────────────────── -->
+<section class="slide" id="s15">
+  <div class="slide-content" style="max-width:min(92vw,960px);margin:0 auto;">
+    <div class="section-marker reveal">Lo que piden</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Cuatro habilidades que <em>no exist&iacute;an</em> hace dos a&ntilde;os.</h2>
+    <table class="dtable reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <thead><tr><th>Habilidad</th><th>Qu&eacute; es en la pr&aacute;ctica</th><th>D&oacute;nde se trabaja</th></tr></thead>
+      <tbody>
+        <tr><td><span class="term">context engineering</span></td><td>Preparar metadatos, definiciones y ejemplos para que el modelo acierte. Menos tokens, m&aacute;s se&ntilde;al.</td><td>Clases 4 y 7</td></tr>
+        <tr><td><span class="term">configurar agentes</span></td><td>Ficheros de instrucciones, skills, servidores MCP, permisos, hooks. Y revisar lo que producen.</td><td>Clases 5 y 6</td></tr>
+        <tr><td><span class="term">evals</span></td><td>Medir si un sistema de IA sobre datos funciona: la respuesta y el camino. Error analysis, jueces, CI.</td><td>Clases 10 y 11</td></tr>
+        <tr><td><span class="term">modelado sem&aacute;ntico</span></td><td>M&eacute;tricas definidas una vez, para personas y agentes. Lo de siempre, con m&aacute;s consecuencias.</td><td>Clases 2 y 7</td></tr>
+      </tbody>
+    </table>
+    <div class="callout note reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+      <span class="ctxt">Ninguna sustituye a saber SQL y entender el negocio. Las cuatro <strong>multiplican</strong> lo que ya sabes: son la diferencia entre usar un agente y que un agente use tu criterio.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>HABILIDADES</span><span>contexto &middot; agentes &middot; evals &middot; sem&aacute;ntica</span></div>
+</section>
+
+<!-- ─── 16 · DIVISOR PARTE 3 ───────────────────────────── -->
+<section class="slide invert" id="s16">
+  <div class="slide-content" style="align-items:center;text-align:center;justify-content:center;max-width:min(92vw,820px);margin:0 auto;">
+    <div class="kicker reveal" style="color:var(--accent);">Parte 3</div>
+    <h2 class="reveal" style="font-size:clamp(1.9rem,5.2vw,3.4rem);margin-top:0.6rem;max-width:18ch;">Conceptos <em>fundamentales.</em></h2>
+    <p class="sub reveal" style="margin-top:clamp(0.8rem,1.8vh,1.3rem);max-width:600px;">Tres distinciones de datos y siete palabras de IA. Todo lo que viene despu&eacute;s asume que las tienes claras.</p>
+  </div>
+  <div class="meta" style="position:absolute;bottom:clamp(0.8rem,2vh,1.4rem);left:0;right:0;padding:0 clamp(1.4rem,5vw,4.5rem);"><span>PARTE 3 &middot; CONCEPTOS</span><span>OLTP/OLAP &middot; DB/DW/Lake &middot; vocabulario IA</span></div>
+</section>
+
+<!-- ─── 17 · OLTP vs OLAP ──────────────────────────────── -->
+<section class="slide" id="s17">
+  <div class="slide-content" style="max-width:min(92vw,940px);margin:0 auto;">
+    <div class="section-marker reveal">OLTP vs OLAP</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Tu base de producci&oacute;n no es donde <em>debe leer un agente.</em></h2>
+    <div class="two-col reveal" style="margin-top:clamp(0.6rem,1.5vh,1rem);flex:unset;">
+      <div class="col">
+        <div class="col-label" style="color:var(--muted);">OLTP &middot; transaccional</div>
+        <div class="code-block" style="flex:unset;">
+          <div class="code-header"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span><span class="code-label">miles de escrituras por segundo</span></div>
+          <div class="code-body"><span class="k">UPDATE</span> pedidos <span class="k">SET</span> estado = <span class="s">'enviado'</span>
+ <span class="k">WHERE</span> id = <span class="g">1042</span>;
+<span class="k">INSERT INTO</span> pagos (pedido_id, importe)
+ <span class="k">VALUES</span> (<span class="g">1042</span>, <span class="g">59.90</span>);</div>
+        </div>
+        <div class="arch-foot" style="text-align:left;">Filas individuales, por &iacute;ndice, ahora. Normalizado para escribir sin duplicar. Postgres, MySQL.</div>
+      </div>
+      <div class="col">
+        <div class="col-label" style="color:var(--accent);">OLAP &middot; anal&iacute;tico</div>
+        <div class="code-block" style="flex:unset;">
+          <div class="code-header"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span><span class="code-label">una lectura, millones de filas</span></div>
+          <div class="code-body"><span class="k">SELECT</span> mes, <span class="fn">sum</span>(importe)
+<span class="k">FROM</span> fct_pedidos
+<span class="k">WHERE</span> a&ntilde;o = <span class="g">2026</span>
+<span class="k">GROUP BY</span> mes;</div>
+        </div>
+        <div class="arch-foot" style="text-align:left;">Columnas completas, agregadas, hist&oacute;rico. Desnormalizado para leer r&aacute;pido. DuckDB, Snowflake, BigQuery.</div>
+      </div>
+    </div>
+    <div class="callout danger reveal" style="margin-top:clamp(0.5rem,1.2vh,0.9rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+      <span class="ctxt">Un agente explorando hace <strong>decenas de queries anal&iacute;ticas</strong> por pregunta, y no sabe cu&aacute;l es cara. Sobre la base que sirve a tus clientes, eso es un incidente. Sobre un OLAP aislado, es un martes normal. Por eso la Clase 2 empieza migrando.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>OLTP / OLAP</span><span>la app escribe &middot; el agente lee en otro sitio</span></div>
+</section>
+
+<!-- ─── 18 · DB vs DW vs LAKE ──────────────────────────── -->
+<section class="slide" id="s18">
+  <div class="slide-content" style="max-width:min(92vw,960px);margin:0 auto;">
+    <div class="section-marker reveal">Databases &middot; warehouses &middot; lakes</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Qu&eacute; guarda cada uno, para qui&eacute;n, <em>a qu&eacute; coste.</em></h2>
+    <table class="dtable reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <thead><tr><th>Sistema</th><th>Qu&eacute; guarda</th><th>Para qui&eacute;n</th><th>Coste t&iacute;pico</th><th>Ejemplos</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Database</strong> (OLTP)</td><td>El estado actual de la aplicaci&oacute;n, fila a fila</td><td>La app y sus usuarios</td><td>Por instancia; barato hasta que no</td><td>Postgres, MySQL</td></tr>
+        <tr class="hot"><td><strong>Data Warehouse</strong></td><td>Hist&oacute;rico modelado, listo para agregar</td><td>Analistas, BI, agentes</td><td>Por c&oacute;mputo y almacenamiento; predecible</td><td>Snowflake, BigQuery, DuckDB</td></tr>
+        <tr><td><strong>Data Lake</strong></td><td>Ficheros crudos de todo tipo (Parquet, JSON, logs, PDF)</td><td>Ingenier&iacute;a, ML</td><td>Almacenamiento muy barato; el coste est&aacute; en usarlo</td><td>S3 + Parquet, Iceberg</td></tr>
+        <tr><td><strong>Lakehouse</strong></td><td>Lake con tabla, transacciones y cat&aacute;logo encima</td><td>Todos los anteriores</td><td>Entre los dos</td><td>Databricks, Iceberg + motor</td></tr>
+      </tbody>
+    </table>
+    <div class="callout note reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <span class="ctxt">Para un agente, lo que importa no es la etiqueta sino si el sistema tiene <strong>tablas con nombre, tipo y descripci&oacute;n</strong>. Un lake sin cat&aacute;logo es un disco duro grande; un warehouse bien modelado es un mapa. En este curso trabajamos sobre el mapa.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>DB / DW / LAKE</span><span>estado &middot; hist&oacute;rico modelado &middot; crudo</span></div>
+</section>
+
+<!-- ─── 19 · VOCABULARIO IA ────────────────────────────── -->
+<section class="slide" id="s19">
+  <div class="slide-content" style="max-width:min(92vw,960px);margin:0 auto;">
+    <div class="section-marker reveal">Vocabulario m&iacute;nimo de IA</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Siete palabras, <em>una l&iacute;nea cada una.</em></h2>
+    <table class="dtable reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <thead><tr><th style="width:11rem;">T&eacute;rmino</th><th>Qu&eacute; es</th><th>Por qu&eacute; te importa</th></tr></thead>
+      <tbody>
+        <tr><td><span class="term">LLM</span></td><td>Modelo que predice texto. Escribe SQL y Python razonablemente bien.</td><td>Es la pieza que razona; no la que decide qu&eacute; puede tocar.</td></tr>
+        <tr><td><span class="term">ventana de contexto</span></td><td>Todo lo que el modelo ve en una llamada: instrucciones, esquema, historial, resultados.</td><td>Finita. Lo que no est&aacute; ah&iacute;, el modelo lo inventa.</td></tr>
+        <tr><td><span class="term">tool calling</span></td><td>El modelo pide ejecutar una funci&oacute;n (una query, una b&uacute;squeda) y recibe el resultado.</td><td>As&iacute; un chat pasa a tocar tus datos.</td></tr>
+        <tr><td><span class="term">agente</span></td><td>Un LLM que ejecuta herramientas en bucle hasta lograr un objetivo.</td><td>Decide el siguiente paso solo. Ah&iacute; est&aacute; el valor y el riesgo.</td></tr>
+        <tr><td><span class="term">MCP</span></td><td>Protocolo est&aacute;ndar para exponer herramientas y datos a cualquier agente.</td><td>Un servidor, todos los agentes. Sin integraciones a medida.</td></tr>
+        <tr><td><span class="term">skill</span></td><td>Carpeta con instrucciones y scripts que el agente carga cuando la tarea lo pide.</td><td>C&oacute;mo empaquetas tu forma de trabajar para que la use el agente.</td></tr>
+        <tr class="hot"><td><span class="term">harness</span></td><td>Todo lo que rodea al modelo: instrucciones, herramientas, permisos, l&iacute;mites, trazas.</td><td>Aqu&iacute; vive la ingenier&iacute;a. No en el prompt.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>VOCABULARIO</span><span>LLM &middot; contexto &middot; tools &middot; agente &middot; MCP &middot; skill &middot; harness</span></div>
+</section>
+
+<!-- ─── 20 · EL BUCLE ──────────────────────────────────── -->
+<section class="slide" id="s20">
+  <div class="slide-content" style="max-width:min(92vw,940px);margin:0 auto;">
+    <div class="section-marker reveal">Qu&eacute; es un agente, en un dibujo</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Herramientas en bucle hasta lograr <em>un objetivo.</em></h2>
+    <p class="sub reveal" style="margin-top:0.4rem;max-width:720px;">El modelo lee el objetivo y el contexto, propone una acci&oacute;n, alguien la ejecuta, el resultado vuelve al contexto, y otra vez. Se para cuando termina, se agota el presupuesto o algo lo detiene.</p>
+    <div class="archviz reveal" style="margin-top:clamp(0.8rem,2vh,1.3rem);grid-template-columns:1fr auto 1fr auto 1fr;max-width:940px;">
+      <div class="arch-node"><div class="an-title">MODELO</div><hr class="an-rule"><div class="arch-line" style="text-align:center;">lee objetivo + contexto<br>propone: &ldquo;ejecuta este SQL&rdquo;</div><div class="arch-foot">razona &middot; no ejecuta</div></div>
+      <div class="arch-conn"><div class="ac-top">petici&oacute;n</div><div class="ac-arrow"></div><div class="ac-sub">tool call</div></div>
+      <div class="arch-node tgt"><div class="an-title">HARNESS</div><hr class="an-rule"><div class="arch-line" style="text-align:center;">&iquest;puede? &iquest;con qu&eacute; rol?<br>&iquest;cu&aacute;ntas veces m&aacute;s?<br>ejecuta &middot; registra</div><div class="arch-foot">permisos &middot; l&iacute;mites &middot; trazas</div></div>
+      <div class="arch-conn"><div class="ac-top">observaci&oacute;n</div><div class="ac-arrow"></div><div class="ac-sub">filas, error, denegado</div></div>
+      <div class="arch-node"><div class="an-title">CONTEXTO</div><hr class="an-rule"><div class="arch-line" style="text-align:center;">el resultado entra<br>&rarr; vuelve al modelo<br>&rarr; siguiente paso o fin</div><div class="arch-foot">el bucle</div></div>
+    </div>
+    <div class="callout proof reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7M21 3v6h-6"/></svg>
+      <span class="ctxt">El modelo <strong>propone</strong>. El harness <strong>decide</strong> qu&eacute; se ejecuta, con qu&eacute; credenciales y hasta cu&aacute;ndo. Todo lo que configuraremos en la Clase 6 (instrucciones, MCP, hooks, permisos) vive en la caja del medio.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>EL BUCLE</span><span>objetivo &rarr; modelo &rarr; herramienta &rarr; harness &rarr; observaci&oacute;n &#8635;</span></div>
+</section>
+
+<!-- ─── 21 · DIVISOR PARTE 4 ───────────────────────────── -->
+<section class="slide invert" id="s21">
+  <div class="slide-content" style="align-items:center;text-align:center;justify-content:center;max-width:min(92vw,820px);margin:0 auto;">
+    <div class="kicker reveal" style="color:var(--accent);">Parte 4</div>
+    <h2 class="reveal" style="font-size:clamp(1.9rem,5.2vw,3.4rem);margin-top:0.6rem;max-width:18ch;">&iquest;Qu&eacute; sistemas est&aacute;n <em>preparados para agentes?</em></h2>
+    <p class="sub reveal" style="margin-top:clamp(0.8rem,1.8vh,1.3rem);max-width:600px;">No es una lista de logos. Son siete propiedades que puedes comprobar en cualquier sistema, incluido el que ya tienes.</p>
+  </div>
+  <div class="meta" style="position:absolute;bottom:clamp(0.8rem,2vh,1.4rem);left:0;right:0;padding:0 clamp(1.4rem,5vw,4.5rem);"><span>PARTE 4 &middot; SISTEMAS</span><span>siete criterios comprobables</span></div>
+</section>
+
+<!-- ─── 22 · SIETE CRITERIOS ───────────────────────────── -->
+<section class="slide" id="s22">
+  <div class="slide-content" style="max-width:min(92vw,960px);margin:0 auto;">
+    <div class="section-marker reveal">Los criterios</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Siete cosas que un agente <em>necesita</em> del sistema.</h2>
+    <table class="dtable reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <thead><tr><th style="width:2.5rem;">#</th><th>Criterio</th><th>Qu&eacute; significa en la pr&aacute;ctica</th><th>Sin &eacute;l, el agente&hellip;</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td><strong>Cat&aacute;logo consultable</strong></td><td>Tablas, columnas, tipos y descripciones accesibles por API, no solo en una UI</td><td>adivina el esquema</td></tr>
+        <tr><td class="num">2</td><td><strong>Capa sem&aacute;ntica</strong></td><td>M&eacute;tricas y dimensiones definidas una vez, legibles por personas y m&aacute;quinas</td><td>inventa &ldquo;ingresos&rdquo;</td></tr>
+        <tr><td class="num">3</td><td><strong>Control de acceso</strong></td><td>RBAC, filas y columnas; el agente hereda los permisos del usuario, no los ampl&iacute;a</td><td>ve lo que t&uacute; no puedes</td></tr>
+        <tr><td class="num">4</td><td><strong>Auditor&iacute;a</strong></td><td>Cada query registrada: qui&eacute;n, cu&aacute;ndo, desde qu&eacute; agente, cu&aacute;nto cost&oacute;</td><td>act&uacute;a sin rastro</td></tr>
+        <tr class="hot"><td class="num">5</td><td><strong>Endpoint MCP o API de agentes</strong></td><td>Conectar cualquier agente sin integraci&oacute;n a medida</td><td>necesita pegamento fr&aacute;gil</td></tr>
+        <tr><td class="num">6</td><td><strong>Funciones de IA en SQL</strong></td><td>Clasificar, extraer, resumir dentro del motor, sin sacar los datos</td><td>mueve datos para pensar</td></tr>
+        <tr><td class="num">7</td><td><strong>Aislamiento de coste y carga</strong></td><td>Que la exploraci&oacute;n de un agente no tumbe ni arruine a nadie</td><td>es un riesgo operativo</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>SIETE CRITERIOS</span><span>cat&aacute;logo &middot; sem&aacute;ntica &middot; acceso &middot; auditor&iacute;a &middot; MCP &middot; IA en SQL &middot; aislamiento</span></div>
+</section>
+
+<!-- ─── 23 · OPERABLE POR CUALQUIER AGENTE ─────────────── -->
+<section class="slide" id="s23">
+  <div class="slide-content" style="max-width:min(92vw,900px);margin:0 auto;">
+    <div class="section-marker reveal">El criterio que m&aacute;s pesa</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Operable por <em>cualquier</em> agente.</h2>
+    <p class="big-q reveal" style="margin-top:clamp(0.8rem,2vh,1.3rem);max-width:24ch;font-size:clamp(1.3rem,3.4vw,2.4rem);">&ldquo;No quiero usar tu agente. Quiero usar <em style="color:var(--accent);font-style:italic;">mi</em> agente para usar tu herramienta.&rdquo;</p>
+    <ul class="bullets reveal" style="margin-top:clamp(0.7rem,1.6vh,1.1rem);max-width:760px;">
+      <li><strong>API y MCP como interfaz de primera clase</strong>, no una UI cerrada con un asistente dentro.</li>
+      <li>Los modelos, los harnesses y las interfaces cambian cada trimestre. <strong>Tu contexto no deber&iacute;a</strong> tener que mudarse con ellos.</li>
+      <li>Un sistema que solo funciona con su propio agente <strong>encierra tu conocimiento</strong> en la interfaz de otro. Cada correcci&oacute;n que haces les ense&ntilde;a a ellos, no a tu stack.</li>
+    </ul>
+    <div class="callout note reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+      <span class="ctxt">Es f&aacute;cil de comprobar en una renovaci&oacute;n: si el equipo de datos dej&oacute; de construir dentro de la herramienta y finanzas dej&oacute; de depender de ella, se cancela. Los vendedores que no exponen API y MCP <strong>ya no entran en la lista corta</strong>.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>OPERABLE</span><span>mi agente &rarr; tu herramienta</span></div>
+</section>
+
+<!-- ─── 24 · LAS PLATAFORMAS HOY ───────────────────────── -->
+<section class="slide" id="s24">
+  <div class="slide-content" style="max-width:min(92vw,980px);margin:0 auto;">
+    <div class="section-marker reveal">Foto del momento</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">D&oacute;nde est&aacute; cada plataforma <em>hoy.</em></h2>
+    <table class="dtable reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <thead><tr><th>Plataforma</th><th>Agente nativo</th><th>MCP</th><th>IA en SQL</th><th>Capa sem&aacute;ntica</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Snowflake</strong></td><td>CoCo (Snowsight, desktop, CLI), Cortex Agents</td><td>Servidor MCP gestionado</td><td><span class="ink-mono">AI_CLASSIFY</span>, <span class="ink-mono">AI_EXTRACT</span>, <span class="ink-mono">AI_COMPLETE</span></td><td>Vistas sem&aacute;nticas + Cortex Analyst</td></tr>
+        <tr><td><strong>Databricks</strong></td><td>Genie, Genie Code</td><td>MCP gestionados y externos</td><td><span class="ink-mono">ai_query</span> + funciones por tarea</td><td>Unity Catalog, Genie spaces</td></tr>
+        <tr><td><strong>BigQuery</strong></td><td>Gemini, agentes de datos</td><td>MCP remoto gestionado</td><td><span class="ink-mono">AI.GENERATE</span> con esquema</td><td>Looker / dbt</td></tr>
+        <tr class="hot"><td><strong>DuckDB / MotherDuck</strong></td><td>Ninguno: usas el tuyo</td><td>Servidores comunitarios, ligeros</td><td>V&iacute;a Python o extensiones</td><td>dbt MCP encima</td></tr>
+        <tr><td><strong>Postgres</strong></td><td>Ninguno: usas el tuyo</td><td>Servidores de solo lectura</td><td>pgvector; pg_duckdb para anal&iacute;tica</td><td>dbt MCP encima</td></tr>
+      </tbody>
+    </table>
+    <div class="callout note reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v6"/></svg>
+      <span class="ctxt">Esta tabla caduca en un trimestre; los siete criterios no. Lo importante: <strong>los cinco cumplen los criterios</strong>, con distinto grado de gobierno incluido de serie. La fila resaltada es el stack del curso: lo que no te da la plataforma, lo montas t&uacute;, y eso es exactamente lo que queremos aprender.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>PLATAFORMAS</span><span>foto de hoy &middot; criterios de siempre</span></div>
+</section>
+
+<!-- ─── 25 · DIVISOR PARTE 5 ───────────────────────────── -->
+<section class="slide invert" id="s25">
+  <div class="slide-content" style="align-items:center;text-align:center;justify-content:center;max-width:min(92vw,820px);margin:0 auto;">
+    <div class="kicker reveal" style="color:var(--accent);">Parte 5</div>
+    <h2 class="reveal" style="font-size:clamp(1.9rem,5.2vw,3.4rem);margin-top:0.6rem;max-width:18ch;">&iquest;Cu&aacute;ndo elegir <em>cada uno?</em></h2>
+    <p class="sub reveal" style="margin-top:clamp(0.8rem,1.8vh,1.3rem);max-width:600px;">Seis preguntas, en orden, antes de mirar una sola p&aacute;gina de precios.</p>
+  </div>
+  <div class="meta" style="position:absolute;bottom:clamp(0.8rem,2vh,1.4rem);left:0;right:0;padding:0 clamp(1.4rem,5vw,4.5rem);"><span>PARTE 5 &middot; ELEGIR</span><span>seis preguntas</span></div>
+</section>
+
+<!-- ─── 26 · MATRIZ DE DECISIÓN ────────────────────────── -->
+<section class="slide" id="s26">
+  <div class="slide-content" style="max-width:min(92vw,960px);margin:0 auto;">
+    <div class="section-marker reveal">Matriz de decisi&oacute;n</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Seis preguntas, <em>en orden.</em></h2>
+    <table class="dtable reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <thead><tr><th style="width:2.5rem;">#</th><th>Pregunta</th><th>Si la respuesta es&hellip;</th><th>Entonces</th></tr></thead>
+      <tbody>
+        <tr class="hot"><td class="num">1</td><td><strong>&iquest;D&oacute;nde viven ya tus datos?</strong></td><td>En Snowflake, Databricks o BigQuery</td><td>Qu&eacute;date. El agente nativo y el MCP gestionado ya existen.</td></tr>
+        <tr><td class="num">2</td><td><strong>&iquest;Cu&aacute;nto volumen?</strong></td><td>Cabe en un port&aacute;til o en una m&aacute;quina (hasta cientos de GB)</td><td>DuckDB. Si hay que compartir: MotherDuck.</td></tr>
+        <tr><td class="num">3</td><td><strong>&iquest;Cu&aacute;nto gobierno necesitas?</strong></td><td>PII, regulaci&oacute;n, auditor&iacute;a exigible</td><td>Plataforma con RBAC fino y auditor&iacute;a nativa; el agente hereda permisos.</td></tr>
+        <tr><td class="num">4</td><td><strong>&iquest;Presupuesto y equipo?</strong></td><td>Peque&ntilde;o, sin plataforma de datos a&uacute;n</td><td>Local-first y open source. Agente de c&oacute;digo gen&eacute;rico + MCP.</td></tr>
+        <tr><td class="num">5</td><td><strong>&iquest;Qu&eacute; latencia?</strong></td><td>Exploraci&oacute;n y reporting</td><td>Cualquier OLAP. Si es milisegundos en la app, es otro problema y otro sistema.</td></tr>
+        <tr><td class="num">6</td><td><strong>&iquest;Qui&eacute;n opera esto en un a&ntilde;o?</strong></td><td>Nadie a tiempo completo</td><td>Gestionado. El coste de operar un stack propio se paga en madrugadas.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout proof reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      <span class="ctxt"><strong>Regla pr&aacute;ctica:</strong> empieza con lo m&iacute;nimo que responde la pregunta, y a&ntilde;ade gobierno antes que potencia. Un agente con un rol de solo lectura sobre DuckDB es m&aacute;s seguro que uno con permisos amplios sobre la plataforma m&aacute;s cara.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>ELEGIR</span><span>d&oacute;nde &middot; cu&aacute;nto &middot; gobierno &middot; equipo &middot; latencia &middot; qui&eacute;n opera</span></div>
+</section>
+
+<!-- ─── 27 · DIVISOR PARTE 6 ───────────────────────────── -->
+<section class="slide invert" id="s27">
+  <div class="slide-content" style="align-items:center;text-align:center;justify-content:center;max-width:min(92vw,820px);margin:0 auto;">
+    <div class="kicker reveal" style="color:var(--accent);">Parte 6</div>
+    <h2 class="reveal" style="font-size:clamp(1.9rem,5.2vw,3.4rem);margin-top:0.6rem;max-width:18ch;">Stacks para trabajar <em>con LLMs.</em></h2>
+    <p class="sub reveal" style="margin-top:clamp(0.8rem,1.8vh,1.3rem);max-width:600px;">Tres configuraciones que funcionan hoy. El patr&oacute;n es el mismo en las tres; cambia qui&eacute;n opera cada pieza.</p>
+  </div>
+  <div class="meta" style="position:absolute;bottom:clamp(0.8rem,2vh,1.4rem);left:0;right:0;padding:0 clamp(1.4rem,5vw,4.5rem);"><span>PARTE 6 &middot; STACKS</span><span>local &middot; cloud ligero &middot; enterprise</span></div>
+</section>
+
+<!-- ─── 28 · TRES STACKS ───────────────────────────────── -->
+<section class="slide" id="s28">
+  <div class="slide-content" style="max-width:min(92vw,980px);margin:0 auto;">
+    <div class="section-marker reveal">Tres configuraciones</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Mismo patr&oacute;n, <em>tres tama&ntilde;os.</em></h2>
+    <div class="grid3 reveal" style="margin-top:clamp(0.8rem,2vh,1.3rem);">
+      <div class="arch-node tgt">
+        <div class="an-title">LOCAL</div><hr class="an-rule">
+        <div class="arch-row"><span class="num">fuente</span><span>Postgres &middot; CSV &middot; Parquet</span></div>
+        <div class="arch-row"><span class="num">OLAP</span><span>DuckDB</span></div>
+        <div class="arch-row"><span class="num">contexto</span><span>AGENTS.md &middot; docs</span></div>
+        <div class="arch-row"><span class="num">agente</span><span>Claude Code &middot; Codex &middot; Gemini CLI</span></div>
+        <div class="arch-row"><span class="num">conexi&oacute;n</span><span>MCP solo lectura</span></div>
+        <div class="arch-foot">el stack del curso &middot; sin coste</div>
+      </div>
+      <div class="arch-node">
+        <div class="an-title">CLOUD LIGERO</div><hr class="an-rule">
+        <div class="arch-row"><span class="num">fuente</span><span>Postgres &middot; SaaS</span></div>
+        <div class="arch-row"><span class="num">OLAP</span><span>MotherDuck</span></div>
+        <div class="arch-row"><span class="num">contexto</span><span>dbt: modelos, docs, m&eacute;tricas</span></div>
+        <div class="arch-row"><span class="num">agente</span><span>el mismo</span></div>
+        <div class="arch-row"><span class="num">conexi&oacute;n</span><span>MCP + dbt MCP</span></div>
+        <div class="arch-foot">compartido &middot; gestionado &middot; barato</div>
+      </div>
+      <div class="arch-node">
+        <div class="an-title">ENTERPRISE</div><hr class="an-rule">
+        <div class="arch-row"><span class="num">fuente</span><span>todo</span></div>
+        <div class="arch-row"><span class="num">OLAP</span><span>Snowflake &middot; Databricks &middot; BigQuery</span></div>
+        <div class="arch-row"><span class="num">contexto</span><span>cat&aacute;logo + capa sem&aacute;ntica</span></div>
+        <div class="arch-row"><span class="num">agente</span><span>nativo (CoCo, Genie) o el tuyo</span></div>
+        <div class="arch-row"><span class="num">conexi&oacute;n</span><span>MCP gestionado</span></div>
+        <div class="arch-foot">gobierno y auditor&iacute;a de serie</div>
+      </div>
+    </div>
+    <div class="callout note reveal" style="margin-top:clamp(0.7rem,1.6vh,1.1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <span class="ctxt">Lee las filas, no las columnas: <strong>fuente &rarr; OLAP &rarr; contexto &rarr; agente v&iacute;a MCP</strong> no cambia. Lo que aprendas en la columna local se traslada a las otras dos sin reescribir nada conceptual.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>TRES STACKS</span><span>fuente &rarr; OLAP &rarr; contexto &rarr; agente</span></div>
+</section>
+
+<!-- ─── 29 · EL STACK DEL CURSO ────────────────────────── -->
+<section class="slide" id="s29">
+  <div class="slide-content" style="max-width:min(92vw,940px);margin:0 auto;">
+    <div class="section-marker reveal">Lo que tendr&aacute;s en tu port&aacute;til</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">El stack del curso, <em>en concreto.</em></h2>
+    <div class="two-col reveal" style="margin-top:clamp(0.6rem,1.5vh,1rem);flex:unset;">
+      <div class="col">
+        <div class="col-label" style="color:var(--muted);">el repositorio</div>
+        <div class="code-block" style="flex:unset;">
+          <div class="code-header"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span><span class="code-label">ai4data-class/</span></div>
+          <div class="code-body">AGENTS.md          <span class="cm"># convenciones, qu&eacute; no tocar</span>
+data/
+  app.sql          <span class="cm"># la app OLTP de ejemplo (Postgres)</span>
+  warehouse.duckdb <span class="cm"># lo construimos en la Clase 2</span>
+docs/
+  metrics/         <span class="cm"># definiciones: clientes_activos.md ...</span>
+.mcp.json          <span class="cm"># DuckDB en solo lectura</span></div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="col-label" style="color:var(--accent);">lo que necesitas antes de la Clase 2</div>
+        <ul class="bullets">
+          <li><strong>Terminal, git y <span class="ink-mono">uv</span></strong> para Python.</li>
+          <li><strong>Un editor con agente:</strong> VS Code, Cursor o Devin.</li>
+          <li><strong>Postgres</strong> local o en Docker, y <strong>DuckDB</strong>.</li>
+          <li><strong>Un agente de c&oacute;digo:</strong> Claude Code, Codex CLI o Gemini CLI. Idealmente con una suscripci&oacute;n a Claude, ChatGPT o Gemini.</li>
+          <li>Opcional: cuenta de MotherDuck, trial de Snowflake o BigQuery sandbox para la columna de al lado.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout note reveal" style="margin-top:clamp(0.5rem,1.2vh,0.9rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M4 17l6-6-6-6M12 19h8"/></svg>
+      <span class="ctxt">Modelos locales (Ollama) sirven para seguir el curso donde el modelo no es el cuello de botella. Para los ejercicios de agentes, un modelo frontier marca la diferencia; lo veremos en la Clase 4.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>STACK DEL CURSO</span><span>Postgres &rarr; DuckDB &rarr; agente v&iacute;a MCP</span></div>
+</section>
+
+<!-- ─── 30 · DEMO ──────────────────────────────────────── -->
+<section class="slide" id="s30">
+  <div class="slide-content" style="max-width:min(92vw,920px);margin:0 auto;">
+    <div class="section-marker reveal">Demo &middot; en vivo</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Un agente sobre un warehouse local, <em>v&iacute;a MCP.</em></h2>
+    <p class="sub reveal" style="margin-top:0.4rem;max-width:720px;">DuckDB con el modelo de la app de ejemplo, un servidor MCP de solo lectura, y un agente de c&oacute;digo sin ninguna instrucci&oacute;n especial. Solo la pregunta.</p>
+    <div class="prompt reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);max-width:760px;">
+      <span class="plabel">pregunta al agente</span>
+      <span class="pcmd">&iquest;Cu&aacute;ntos clientes activos tuvimos en marzo? Ens&eacute;&ntilde;ame el SQL.</span>
+    </div>
+    <div class="col-label reveal" style="margin-top:clamp(0.7rem,1.6vh,1.1rem);color:var(--muted);">qu&eacute; mirar mientras corre</div>
+    <ul class="bullets reveal" style="margin-top:0.3rem;max-width:760px;">
+      <li>Qu&eacute; <strong>tablas elige</strong> y por qu&eacute;. &iquest;Las explor&oacute; antes o fue directo?</li>
+      <li>C&oacute;mo interpreta <strong>&ldquo;activo&rdquo;</strong> sin que nadie se lo haya definido.</li>
+      <li>Cu&aacute;ntas <strong>queries</strong> lanza antes de responder. &iquest;Alguna cara?</li>
+      <li>Si <strong>declara sus supuestos</strong> o los esconde dentro del n&uacute;mero.</li>
+    </ul>
+    <div class="spoiler reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);max-width:760px;">
+      <div class="callout danger">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+        <span class="ctxt"><strong>Lo que suele pasar:</strong> tres ejecuciones, tres definiciones de &ldquo;activo&rdquo; (con pedido, con login, con pedido pagado), tres n&uacute;meros distintos, SQL v&aacute;lido en los tres. El modelo no fall&oacute;. El contexto no exist&iacute;a.</span>
+      </div>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>DEMO</span><span>DuckDB &middot; MCP solo lectura &middot; agente de c&oacute;digo</span></div>
+</section>
+
+<!-- ─── 31 · LO QUE ACABAS DE VER ──────────────────────── -->
+<section class="slide" id="s31">
+  <div class="slide-content" style="max-width:min(92vw,920px);margin:0 auto;">
+    <div class="section-marker reveal">Lo que acabas de ver</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">El SQL es la respuesta. El n&uacute;mero es <em>una consecuencia.</em></h2>
+    <p class="sub reveal" style="margin-top:0.4rem;max-width:720px;">Cada ejecuci&oacute;n deja una traza. Normalizada en pasos, se puede leer, comparar y evaluar. As&iacute; se ve la de hoy:</p>
+    <div class="code-block reveal" style="margin-top:clamp(0.5rem,1.2vh,0.9rem);flex:unset;max-width:760px;">
+      <div class="code-header"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span><span class="code-label">traza normalizada &middot; run_7f3a</span></div>
+      <div class="code-body"><span class="n">LIST_TABLES</span>          <span class="cm">7 tablas</span>
+<span class="n">READ_SCHEMA</span>          <span class="cm">clientes, pedidos, sesiones</span>
+<span class="r">READ_DOMAIN_DOC</span>      <span class="r">&mdash; falta: nadie escribi&oacute; qu&eacute; es "activo"</span>
+<span class="r">READ_SEMANTIC_VIEW</span>   <span class="r">&mdash; falta: no hay capa sem&aacute;ntica</span>
+<span class="n">EXECUTE_SQL</span>          <span class="k">SELECT</span> <span class="fn">count</span>(<span class="k">DISTINCT</span> cliente_id) <span class="k">FROM</span> pedidos
+                     <span class="k">WHERE</span> fecha <span class="k">BETWEEN</span> <span class="s">'2026-03-01'</span> <span class="k">AND</span> <span class="s">'2026-03-31'</span>
+<span class="n">SYNTHESIZE_ANSWER</span>    <span class="cm">"4.812 clientes activos"  supuestos: 1 (impl&iacute;cito)</span></div>
+    </div>
+    <div class="callout proof reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      <span class="ctxt">Un n&uacute;mero correcto por un camino imperfecto vale menos que un n&uacute;mero correcto por el camino definido, y se rompe con el siguiente modelo. Las dos l&iacute;neas en rojo son las que rellenan las Clases 2 y 7. <strong>Evaluar el camino y no solo el resultado</strong> es la Clase 10.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>LA TRAZA</span><span>mira el camino, no solo el n&uacute;mero</span></div>
+</section>
+
+<!-- ─── 32 · RECAP ─────────────────────────────────────── -->
+<section class="slide" id="s32">
+  <div class="slide-content" style="max-width:min(92vw,900px);margin:0 auto;">
+    <div class="section-marker reveal">Recap</div>
+    <h2 class="reveal" style="margin-top:clamp(0.4rem,1vh,0.8rem);">Cinco ideas <em>para la semana.</em></h2>
+    <ul class="bullets reveal" style="margin-top:clamp(0.7rem,1.6vh,1.1rem);max-width:780px;gap:clamp(0.45rem,1vh,0.7rem);">
+      <li><strong>Producir an&aacute;lisis es barato; el consenso es el recurso escaso.</strong> Y el consenso se dise&ntilde;a, se afirma y se mide.</li>
+      <li><strong>El trabajo pasa de producir an&aacute;lisis a codificar criterio:</strong> definiciones, contexto, controles y evals que un agente pueda leer.</li>
+      <li><strong>OLTP sirve a la app; OLAP sirve a las preguntas.</strong> Un agente nunca explora sobre producci&oacute;n.</li>
+      <li><strong>Un sistema est&aacute; preparado para agentes si tiene</strong> cat&aacute;logo, sem&aacute;ntica, acceso, auditor&iacute;a, MCP, IA en SQL y aislamiento. Y si tu agente puede usarlo.</li>
+      <li><strong>Empieza con el stack m&aacute;s peque&ntilde;o que responda la pregunta</strong> y a&ntilde;ade gobierno antes que potencia.</li>
+    </ul>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>RECAP</span><span>consenso &middot; criterio &middot; OLTP/OLAP &middot; siete criterios &middot; empezar peque&ntilde;o</span></div>
+</section>
+
+<!-- ─── 33 · PUENTE A LA CLASE 2 ───────────────────────── -->
+<section class="slide invert" id="s33">
+  <div class="slide-content" style="align-items:center;text-align:center;justify-content:center;max-width:min(92vw,860px);margin:0 auto;">
+    <div class="kicker reveal" style="color:var(--accent);">Pr&oacute;xima clase</div>
+    <h2 class="reveal" style="font-size:clamp(1.9rem,5.2vw,3.4rem);margin-top:0.6rem;max-width:20ch;">De OLTP a un data warehouse, <em>con agentes.</em></h2>
+    <p class="sub reveal" style="margin-top:clamp(0.8rem,1.8vh,1.3rem);max-width:640px;">Hoy viste el agente responder sobre un warehouse que ya exist&iacute;a. La pr&oacute;xima clase lo construimos desde la app en Postgres: extraer, modelar, documentar y exponer por MCP. Con un agente de c&oacute;digo haciendo el trabajo y nosotros revisando. Migraci&oacute;n &rarr; uso.</p>
+    <div class="stream reveal" style="margin-top:clamp(1rem,2.4vh,1.6rem);">
+      <div class="stream-rail">
+        <span class="node src">Postgres</span>
+        <span class="rail">
+          <span class="pkt" style="animation-delay:0s">E</span>
+          <span class="pkt" style="animation-delay:-1.4s">T</span>
+          <span class="pkt" style="animation-delay:-2.8s">D</span>
+          <span class="pkt" style="animation-delay:-4.2s">M</span>
+        </span>
+        <span class="node dst">DuckDB + MCP</span>
+      </div>
+      <div class="cap">extraer &rarr; transformar &rarr; documentar &rarr; exponer por MCP</div>
+    </div>
+  </div>
+  <div class="meta" style="position:absolute;bottom:clamp(0.8rem,2vh,1.4rem);left:0;right:0;padding:0 clamp(1.4rem,5vw,4.5rem);"><span>CLASE 2</span><span>la misma pregunta, respondida bien solo por mejorar el contexto</span></div>
+</section>
+
+<!-- ─── 34 · LECTURAS ──────────────────────────────────── -->
+<section class="slide" id="s34">
+  <div class="slide-content" style="max-width:min(92vw,900px);margin:0 auto;">
+    <div class="kicker reveal">Antes de la Clase 2</div>
+    <h2 class="reveal" style="margin-top:clamp(0.3rem,0.8vh,0.6rem);">Tres lecturas y una instalaci&oacute;n.</h2>
+    <table class="dtable reveal" style="margin-top:clamp(0.5rem,1.2vh,0.9rem);">
+      <thead><tr><th>Lectura</th><th>Por qu&eacute;</th><th class="num">Tiempo</th></tr></thead>
+      <tbody>
+        <tr class="hot"><td>Ian Macomber, <em>The Shape and Feel of the Post-AI Data Stack</em></td><td>La Parte 1 de hoy, contada por quien la vivi&oacute;. L&eacute;ela entera.</td><td class="num">25 min</td></tr>
+        <tr><td>Anthropic, <em>Effective context engineering for AI agents</em></td><td>Por qu&eacute; el contexto es finito y qu&eacute; hacer al respecto. Base de la Clase 4.</td><td class="num">20 min</td></tr>
+        <tr><td>MotherDuck, <em>Replicate PostgreSQL tables to DuckDB</em></td><td>El patr&oacute;n exacto que el agente ejecutar&aacute; en la Clase 2. Solo la parte de <span class="ink-mono">ATTACH</span>.</td><td class="num">10 min</td></tr>
+      </tbody>
+    </table>
+    <div class="callout note reveal" style="margin-top:clamp(0.6rem,1.4vh,1rem);">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg>
+      <span class="ctxt"><strong>Instala:</strong> DuckDB, Postgres (local o Docker) y un agente de c&oacute;digo (Claude Code, Codex CLI o Gemini CLI). Comprueba que <span class="ink-mono">duckdb</span> abre en tu terminal y que el agente responde a &ldquo;hola&rdquo;. Con eso empezamos la Clase 2 en el minuto uno.</span>
+    </div>
+  </div>
+  <hr class="rule" style="margin-bottom:0.7rem;">
+  <div class="meta"><span>LECTURAS &middot; INSTALACI&Oacute;N</span><span>Macomber &middot; Anthropic &middot; MotherDuck &middot; duckdb + agente</span></div>
+</section>
+
+<script>
+/* ============ navigation + reveal orchestration ============ */
+const slides=[...document.querySelectorAll('.slide')];
+const bar=document.getElementById('progressBar');
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      const i=slides.indexOf(e.target);
+      bar.style.width=((i+1)/slides.length*100)+'%';
+    }
+  });
+},{threshold:0.5});
+slides.forEach(s=>io.observe(s));
+
+function go(n){const i=Math.max(0,Math.min(slides.length-1,n));slides[i].scrollIntoView({behavior:'smooth'});}
+function current(){
+  let best=0,bestTop=Infinity;
+  slides.forEach((s,i)=>{const t=Math.abs(s.getBoundingClientRect().top);if(t<bestTop){bestTop=t;best=i;}});
+  return best;
+}
+window.addEventListener('keydown',(e)=>{
+  if(['ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();go(current()+1);}
+  else if(['ArrowUp','PageUp'].includes(e.key)){e.preventDefault();go(current()-1);}
+  else if(e.key==='Home'){e.preventDefault();go(0);}
+  else if(e.key==='End'){e.preventDefault();go(slides.length-1);}
+  else if(e.key==='r'||e.key==='R'){slides[current()].querySelectorAll('.spoiler').forEach(s=>s.classList.add('revealed'));}
+});
+document.querySelectorAll('.spoiler').forEach(s=>s.addEventListener('click',()=>s.classList.add('revealed')));
+</script>
+</body>
+</html>

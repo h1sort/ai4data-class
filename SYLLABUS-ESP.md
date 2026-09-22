@@ -4,12 +4,9 @@
 
 Curso práctico para perfiles de datos (analistas, ingenieros de datos, analytics engineers, científicos de datos y responsables de equipos de datos) que quieren trabajar con LLMs y agentes en serio: no solo "preguntarle al chat", sino preparar el contexto, configurar el harness, conectar agentes a sus sistemas de datos con garantías y medir si funcionan.
 
-Doce sesiones. Las tres primeras son gratuitas y abiertas; el resto forma parte del curso completo.
+Doce sesiones en cinco bloques: fundamentos y casos reales, interfaces de trabajo con agentes, construcción de productos de datos, evals y seguridad, y proyecto final.
 
-### Modelo freemium
-
-- **Clases 1-3 (gratis, online):** por qué cambia el rol de datos, una migración OLTP → warehouse hecha con agentes de principio a fin, y casos reales. Objetivo: que entiendas por qué esto va en serio y veas que funciona con datos reales.
-- **Clases 4-12 (curso completo):** hacerlo tú, con tus datos. Chats con conectores, agentes de código, tu propio harness (AGENTS.md, skills, MCP, hooks), capa semántica, APIs y modelos de decisión, IA dentro del warehouse, evals, seguridad y proyecto final.
+La tesis del curso: la IA ha hecho que producir análisis cueste casi cero, pero no ha hecho más barato ponerse de acuerdo en qué es verdad. El trabajo del equipo de datos pasa de producir análisis a codificar su criterio (definiciones, contexto, controles, evals) en infraestructura para que cualquier agente, en cualquier interfaz, llegue a la misma respuesta correcta.
 
 ### Resultados de aprendizaje
 
@@ -42,26 +39,26 @@ Requisito: SQL intermedio y nociones de Python. No hace falta experiencia previa
 
 ## Mapa del curso
 
-| Clase | Título | Bloque | Acceso |
-| --- | --- | --- | --- |
-| 1 | Cómo ha cambiado el rol de datos en la era IA | 1. La era agéntica de los datos | Gratis |
-| 2 | De OLTP a un Data Warehouse con agentes | 1. La era agéntica de los datos | Gratis |
-| 3 | Flujos agénticos de datos | 1. La era agéntica de los datos | Gratis |
-| 4 | LLMs vía chat para datos: de prompts a contexto | 2. Interfaces: chats, copilotos y harnesses | Curso completo |
-| 5 | Copilotos y agentes de código para datos | 2. Interfaces: chats, copilotos y harnesses | Curso completo |
-| 6 | Tu harness de datos: AGENTS.md, skills, MCP, hooks y subagentes | 2. Interfaces: chats, copilotos y harnesses | Curso completo |
-| 7 | Contexto para agentes: capa semántica, metadatos y RAG | 3. Construir: contexto, APIs, decisiones y productos | Curso completo |
-| 8 | APIs, salidas estructuradas y modelos de decisión | 3. Construir: contexto, APIs, decisiones y productos | Curso completo |
-| 9 | IA dentro del warehouse y productos de datos | 3. Construir: contexto, APIs, decisiones y productos | Curso completo |
-| 10 | Evals I: analizar y medir sistemas de IA sobre datos | 4. Confiar: evals, seguridad y operación | Curso completo |
-| 11 | Evals II, seguridad y operación | 4. Confiar: evals, seguridad y operación | Curso completo |
-| 12 | Proyecto final y futuro | 5. Proyecto final | Curso completo |
+| Clase | Título | Bloque |
+| --- | --- | --- |
+| 1 | Cómo ha cambiado el rol de datos en la era IA | 1. La era agéntica de los datos |
+| 2 | De OLTP a un Data Warehouse con agentes | 1. La era agéntica de los datos |
+| 3 | Flujos agénticos de datos | 1. La era agéntica de los datos |
+| 4 | LLMs vía chat para datos: de prompts a contexto | 2. Interfaces: chats, copilotos y harnesses |
+| 5 | Copilotos y agentes de código para datos | 2. Interfaces: chats, copilotos y harnesses |
+| 6 | Tu harness de datos: AGENTS.md, skills, MCP, hooks y subagentes | 2. Interfaces: chats, copilotos y harnesses |
+| 7 | Contexto para agentes: capa semántica, metadatos y RAG | 3. Construir: contexto, APIs, decisiones y productos |
+| 8 | APIs, salidas estructuradas y modelos de decisión | 3. Construir: contexto, APIs, decisiones y productos |
+| 9 | IA dentro del warehouse y productos de datos | 3. Construir: contexto, APIs, decisiones y productos |
+| 10 | Evals I: analizar y medir sistemas de IA sobre datos | 4. Confiar: evals, seguridad y operación |
+| 11 | Evals II, seguridad y operación | 4. Confiar: evals, seguridad y operación |
+| 12 | Proyecto final y futuro | 5. Proyecto final |
 
 ## Bloques temáticos
 
-### Bloque 1: La era agéntica de los datos (Clases 1-3, gratis)
+### Bloque 1: La era agéntica de los datos (Clases 1-3)
 
-- Qué ha cambiado en el rol de datos y qué habilidades se demandan ahora.
+- Cuatro eras del stack de datos, por qué el consenso es ahora el recurso escaso y qué habilidades se demandan.
 - Fundamentos: OLTP vs OLAP; databases vs data warehouses vs data lakes; qué hace a un sistema "preparado para agentes".
 - Stacks para trabajar con LLMs: local, cloud ligero y enterprise.
 - Migración didáctica OLTP → warehouse con agentes, y uso del warehouse desde agentes.
@@ -76,7 +73,7 @@ Requisito: SQL intermedio y nociones de Python. No hace falta experiencia previa
 
 ### Bloque 3: Construir: contexto, APIs, decisiones y productos (Clases 7-9)
 
-- Capa semántica y metadatos como contexto; context engineering y RAG aplicados a datos.
+- Capa semántica, metadatos y artefactos legibles por agentes como contexto; context engineering y RAG aplicados a datos.
 - APIs de LLMs, tool calling y salidas estructuradas. De strings a decisiones tipadas: modelos de decisión (System One Models, ej. Jev).
 - Funciones de IA en SQL (Snowflake, Databricks, BigQuery) y agentes gestionados por la plataforma.
 - Arquitectura de referencia y construcción de productos de datos: NLQ gobernado, informes automáticos, pipelines de decisión.
@@ -84,6 +81,7 @@ Requisito: SQL intermedio y nociones de Python. No hace falta experiencia previa
 ### Bloque 4: Confiar: evals, seguridad y operación (Clases 10-11)
 
 - Ciclo Analizar → Medir → Mejorar (Hamel Husain y Shreya Shankar) aplicado a datos: trazas, error analysis, evaluadores de código y LLM-as-judge.
+- Evals sobre la respuesta y sobre el camino; tasa de divergencia de consenso entre interfaces.
 - Suites de tareas al estilo ADE-bench, evals en CI/CD, monitorización en producción.
 - Seguridad de agentes de datos: prompt injection vía datos, tool poisoning, mínimo privilegio, auditoría.
 - Coste, adopción en equipos y nuevos roles.
@@ -96,15 +94,20 @@ Requisito: SQL intermedio y nociones de Python. No hace falta experiencia previa
 
 Cada clase incluye ejercicio práctico y lecturas. Las herramientas son, en su mayoría, gratuitas o con capa gratuita. El repositorio del curso incluye un dataset OLTP de ejemplo que se reutiliza de la Clase 2 al proyecto final.
 
-### Clase 1: Cómo ha cambiado el rol de datos en la era IA (Bloque 1, gratis)
+### Clase 1: Cómo ha cambiado el rol de datos en la era IA (Bloque 1)
 
 Objetivo: entender qué ha cambiado de verdad, qué se pide ahora y el mapa mental que usaremos el resto del curso.
 
-- Repaso de cómo ha cambiado el rol
-  - De escribir SQL y pipelines a mano a especificar, revisar y orquestar trabajo hecho por agentes.
-  - Del "dashboard para todos" a "agentes que responden sobre datos gobernados".
-  - Qué se ha comoditizado (código repetitivo, EDA inicial, documentación) y qué se ha revalorizado (modelado, semántica, gobierno, criterio).
+- Repaso de cómo ha cambiado el rol: cuatro eras, cuatro recursos escasos
+  - ~2013, stack pre-moderno: datos en silos que no se podían cruzar, sin soporte para JSON, cien millones de filas tumbaban el servidor. El límite era qué podías consultar.
+  - ~2016, cloud data warehouse: todos los datos de la empresa en un sitio, cómputo elástico, semiestructurado nativo. El límite era llegar a todo.
+  - ~2020, Modern Data Stack y Reverse ETL: datos de cualquier SaaS con un clic, y los resultados de vuelta a los sistemas operativos. De reportar a operar.
+  - ~2026, stack post-IA: producir un análisis o un dashboard cuesta casi cero, y cualquiera puede hacerlo con una pregunta distinta, una definición distinta y llegar a un número distinto. El recurso escaso es el consenso.
+  - Qué se ha comoditizado (código repetitivo, EDA inicial, dashboards, documentación) y qué se ha revalorizado (modelado, semántica, gobierno, criterio).
+  - De escribir SQL y pipelines a mano a especificar, revisar y orquestar trabajo hecho por agentes; de producir análisis a codificar tu criterio en infraestructura para que cualquier agente responda bien sin ti en la sala.
+  - El dashboard deja de ser un destino que se abre los lunes y pasa a ser un repositorio de hechos y definiciones que los agentes descomponen y recombinan para quien pregunta.
 - Nuevas habilidades en demanda
+  - Los dos trabajos del equipo de datos hoy: que todo el mundo pueda construir con datos e IA de forma correcta e independiente, y construir y defender la realidad única sobre la que opera la empresa.
   - Context engineering: preparar metadatos, definiciones y ejemplos para que el modelo acierte.
   - Configurar y gobernar agentes: ficheros de instrucciones, skills, MCP, permisos, revisión.
   - Evals: saber medir si un sistema de IA sobre datos funciona.
@@ -115,6 +118,7 @@ Objetivo: entender qué ha cambiado de verdad, qué se pide ahora y el mapa ment
   - Vocabulario mínimo de IA: LLM, ventana de contexto, tool calling, agente, MCP, skill, harness.
 - ¿Qué sistemas están preparados para los agentes?
   - Criterios: catálogo y metadatos consultables, capa semántica, control de acceso (RBAC, filas y columnas), auditoría, endpoint MCP o API de agentes, funciones de IA en SQL, aislamiento de coste y carga.
+  - Operable por cualquier agente: API y MCP como interfaz de primera clase, no una UI cerrada con su propio asistente. "No quiero usar tu agente; quiero usar mi agente para usar tu herramienta."
   - Por familia: Snowflake (Cortex, MCP gestionado, CoCo), Databricks (Unity Catalog, Genie), BigQuery (MCP remoto, AI.GENERATE), DuckDB/MotherDuck (ligero, local-first), Postgres (pg_duckdb, MCP de solo lectura).
 - ¿Cuándo elegir cada uno?
   - Matriz de decisión: volumen, gobierno, presupuesto, tamaño de equipo, latencia y dónde ya viven tus datos.
@@ -124,7 +128,7 @@ Objetivo: entender qué ha cambiado de verdad, qué se pide ahora y el mapa ment
   - Enterprise: Snowflake, Databricks o BigQuery con sus agentes nativos y MCP.
 - Demo de cierre: un agente respondiendo preguntas sobre un warehouse local vía MCP. Puente a la Clase 2: cómo se construye eso desde cero.
 
-### Clase 2: De OLTP a un Data Warehouse con agentes (Bloque 1, gratis)
+### Clase 2: De OLTP a un Data Warehouse con agentes (Bloque 1)
 
 Objetivo: ver de principio a fin una migración didáctica de una base de datos transaccional a un sistema preparado para analítica y agentes, construida con ayuda de agentes y después usada por agentes. Cubre: Migración → Uso.
 
@@ -143,7 +147,7 @@ Objetivo: ver de principio a fin una migración didáctica de una base de datos 
   - Primer contacto con la capa semántica: por qué "ingresos" necesita una definición antes de que nadie pregunte por ellos.
 - Demo de cierre: la misma pregunta que el agente respondía mal al principio, respondida bien solo por mejorar el contexto. Puente a la Clase 3: qué pasa cuando esto se aplica a casos reales.
 
-### Clase 3: Flujos agénticos de datos (Bloque 1, gratis)
+### Clase 3: Flujos agénticos de datos (Bloque 1)
 
 Objetivo: charla entre motivacional y práctica con casos que el instructor ha aplicado en su carrera con IA y datos, en banca y en otros sectores, siempre con el mismo marco para que sean replicables.
 
@@ -162,7 +166,7 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
   - Humano en el bucle donde el error cuesta; automatización total donde el resultado se puede verificar.
   - Decisiones estructuradas antes que texto libre.
   - El contexto importa más que el modelo.
-- Cierre del bloque gratuito: mapa detallado de las Clases 4-12 y qué serás capaz de construir al terminar el curso.
+- Cierre del bloque: qué construiremos en las Clases 4-12 y cómo encaja con los casos vistos.
 
 ### Clase 4: LLMs vía chat para datos: de prompts a contexto (Bloque 2)
 
@@ -175,6 +179,7 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
   - Claude: Projects, conectores MCP a tu warehouse, análisis de ficheros, Claude for Excel.
   - Gemini: en Sheets (`=AI()`, Fill with Gemini) y en BigQuery.
   - Cuándo el chat basta (exploración, interpretación, comunicación) y cuándo no (reproducibilidad, escala, gobierno).
+  - Conectar el chat de un vendedor directamente a datos crudos, sin capa semántica en medio, es rápido para una persona y una crisis de reproducibilidad para la empresa: cada corrección que haces enseña al vendedor sobre tu negocio en lugar de arreglar tu stack. Lo resolvemos en la Clase 7.
 - Uso en datos: EDA guiada, traducir insights para stakeholders, generar y contrastar hipótesis, revisar SQL ajeno, documentar.
 - Privacidad y seguridad en chats: qué datos subes, retención, planes empresa vs consumo, anonimización.
 - Ejercicio: el mismo dataset en tres configuraciones (chat sin contexto, chat con esquema y definiciones, chat con conector). Comparar SQL, respuestas y errores.
@@ -215,7 +220,10 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
 - Context engineering aplicado: el menor conjunto de tokens de alta señal; recuperación just-in-time frente a cargar todo; compactación; "context rot".
 - RAG hoy en datos: recuperación sobre documentación, tickets y definiciones; búsqueda vectorial en el warehouse (Cortex Search, Vector Search) como herramienta del agente, no como sustituto del SQL.
 - Metadatos como producto: catálogo, linaje, owners, frescura. Todo lo que el agente puede consultar antes de responder.
-- Ejercicio: definir cinco métricas en una capa semántica y comprobar que el agente responde igual desde chat, agente de código y API.
+- Artefactos legibles por agentes: cada producto de datos (dashboard, modelo, análisis) publicado también para máquinas: descriptor en markdown, SQL recuperable, valores cacheados, owners y cómo se relaciona con el resto del modelo. El equivalente a un `llms.txt` por producto de datos, para que tu respuesta aparezca cuando alguien le pregunta a su agente.
+- Contexto agnóstico al agente: definiciones y conectores headless para que un compañero, un agente de código, una herramienta de BI o un bot de Slack den la misma respuesta. Modelos, harnesses e interfaces cambian cada trimestre; no encierres la inteligencia de tu empresa en la interfaz de un vendedor.
+- Por qué la capa semántica llegó al comité de dirección: cada "esto se ve raro" y cada aclaración de una métrica es aprendizaje que compone dentro de tus cuatro paredes o dentro de las de otro. La capa semántica es donde se acumula el conocimiento tribal ("el TPV excluye devoluciones después del día 45") para que cada pregunta, agente y persona nueva empiece más lista que la anterior.
+- Ejercicio, test de consenso: definir cinco métricas en una capa semántica y preguntar por cada una desde chat, agente de código y API. Contar cuántas respuestas distintas salen. Si es más de una, leer las trazas, arreglar el contexto y repetir hasta que la interfaz no cambie la respuesta.
 
 ### Clase 8: APIs, salidas estructuradas y modelos de decisión (Bloque 3)
 
@@ -231,6 +239,8 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
 ### Clase 9: IA dentro del warehouse y productos de datos (Bloque 3)
 
 - Funciones de IA en SQL: Snowflake (`AI_CLASSIFY`, `AI_EXTRACT` con scores, `AI_COMPLETE`), Databricks (`ai_query` y funciones por tarea), BigQuery (`AI.GENERATE` con `output_schema`). Enriquecer sin sacar los datos del warehouse; gobierno y coste.
+- Más allá del SQL: preguntas que no tienen forma de SQL (llamadas, tickets, correos, contratos). Pre-modelar por significado igual que se modela por forma: un etiquetador de IA pasa una vez, offline, sobre todo el corpus y escribe columnas estructuradas (`motivo_perdida`, `tipo_objecion`, `competidor_mencionado`) que cualquier análisis futuro puede filtrar y agrupar. La taxonomía sale de observar qué preguntan los usuarios; las funciones de IA en SQL y los modelos de decisión de la Clase 8 son la herramienta.
+  - Prompt versionado en tu infraestructura y taxonomía mantenida por el equipo, revisada con cada error. Anti-patrón: delegar el etiquetado a un vendedor cuya distribución cambia sin aviso y que no puedes reproducir, depurar ni revertir.
 - Agentes gestionados por la plataforma: Snowflake Cortex Agents y Snowflake Intelligence, Databricks Genie, agentes de datos en BigQuery. Exponerlos por MCP. Cuándo usarlos y cuándo construir el tuyo.
 - Construir productos de datos con LLMs
   - NLQ sobre datos gobernados con capa semántica.
@@ -251,11 +261,14 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
   - Nivel 2, LLM-as-judge validado contra criterio humano (acuerdo, sesgos, cuándo una métrica es ruido).
   - Nivel 3, A/B y métricas de producto.
 - Evaluar agentes: tool calls, retrieval, multi-turno. ADE-bench como modelo de suite de tareas para datos (tarea, answer key, tests que deciden pasa/no pasa).
-- Ejercicio: 30 trazas del producto de la Clase 9 → taxonomía de fallos → tres evaluadores.
+- Evaluar la respuesta y la evidencia: un número correcto por un camino imperfecto vale menos, y se rompe con el siguiente modelo, que un número correcto por el camino bendecido (leer el doc de dominio, usar la vista semántica, ejecutar el SQL canónico). Normalizar las trazas en pasos (`READ_DOMAIN_DOC`, `READ_SEMANTIC_VIEW`, `EXECUTE_SQL`, `SYNTHESIZE_ANSWER`) para poder afirmar sobre el proceso, no solo sobre el resultado.
+- Asume que el modelo nunca se equivoca: tu contexto está subespecificado. La taxonomía de fallos se quema arreglando docs, modelos y definiciones, no esperando al siguiente modelo frontier.
+- Ejercicio: 30 trazas del producto de la Clase 9 → taxonomía de fallos → tres evaluadores, al menos uno sobre el camino y no sobre la respuesta.
 
 ### Clase 11: Evals II, seguridad y operación (Bloque 4)
 
-- Evals en CI/CD: suite de tareas que corre al cambiar prompt, modelo, skill o servidor MCP; comparar experimentos; evitar sobreajustar a la suite.
+- Evals en CI/CD: suite de tareas que corre al cambiar prompt, modelo, skill o servidor MCP; comparar experimentos; evitar sobreajustar a la suite. Snapshot del sistema en cada ejecución (modelo, prompt, tools, código, corpus de evaluación y hash del conocimiento disponible) para poder reproducir un fallo semanas después.
+- Tasa de divergencia de consenso: porcentaje de preguntas cuya respuesta o cuyo camino cambia según la interfaz o el modelo desde el que se pregunta. Para las métricas que mira dirección cada semana, el objetivo es cero.
 - Monitorización en producción: drift, coste, latencia, tasa de intervención humana.
 - Seguridad de agentes de datos
   - Prompt injection vía datos (filas, tickets, documentos) y tool poisoning (descripciones de tools MCP).
@@ -268,7 +281,7 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
 ### Clase 12: Proyecto final y futuro (Bloque 5)
 
 - Presentaciones del proyecto final: arquitectura, harness, evals y demo en vivo.
-- Debate: agentes de plataforma vs propios, modelos de decisión, estándares (MCP, Agent Skills), el rol del profesional de datos en dos años.
+- Debate: agentes de plataforma vs propios, modelos de decisión, estándares (MCP, Agent Skills), el rol del profesional de datos en dos años: cuando dirección "lea el dashboard" sin abrirlo nunca, el trabajo es que el significado sobreviva a la edición.
 - Recap de herramientas y lecciones. Certificación y cierre.
 
 ## Proyecto final
@@ -280,17 +293,19 @@ Producto de datos agéntico con evals, de extremo a extremo:
 3. Harness: `AGENTS.md`, al menos una skill, MCP de solo lectura, hooks.
 4. Un producto a elegir: NLQ gobernado, informe automático o pipeline de decisiones (clasificación/extracción con umbrales de confianza).
 5. Suite de evals (mínimo 20 tareas, evaluadores de código y LLM-as-judge) en CI, más una prueba de seguridad.
+6. Test de consenso: las cinco métricas preguntadas desde al menos dos interfaces distintas, con la tasa de divergencia medida y cada divergencia explicada y corregida.
 
 Rúbrica: corrección de datos (30%), diseño de contexto y harness (25%), evals y evidencia (25%), seguridad y gobierno (10%), presentación (10%).
 
 ## Evaluación y certificación
 
-- Ejercicios prácticos por clase (Clases 4-11).
+- Ejercicios prácticos por clase.
 - Proyecto final presentado en la Clase 12.
 - Certificado al completar los ejercicios y el proyecto.
 
 ## Lecturas y referencias base
 
+- Ian Macomber, "The Shape and Feel of the Post-AI Data Stack": https://www.iandmacomber.com/blog/post-ai-data-stack/
 - Anthropic, "Effective context engineering for AI agents": https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
 - Anthropic, "Equipping agents for the real world with Agent Skills" y especificación Agent Skills: https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills · https://github.com/agentskills/agentskills
 - Birgitta Böckeler (martinfowler.com), "Harness engineering for coding agent users": https://martinfowler.com/articles/harness-engineering.html

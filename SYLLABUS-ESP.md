@@ -11,10 +11,32 @@ Doce sesiones. Las tres primeras son gratuitas y abiertas; el resto forma parte 
 - **Clases 1-3 (gratis, online):** por qué cambia el rol de datos, una migración OLTP → warehouse hecha con agentes de principio a fin, y casos reales. Objetivo: que entiendas por qué esto va en serio y veas que funciona con datos reales.
 - **Clases 4-12 (curso completo):** hacerlo tú, con tus datos. Chats con conectores, agentes de código, tu propio harness (AGENTS.md, skills, MCP, hooks), capa semántica, APIs y modelos de decisión, IA dentro del warehouse, evals, seguridad y proyecto final.
 
+### Modelo mental del curso: Saber, Hacer, Decidir
+
+Usamos una definición deliberadamente útil de agente: *un agente LLM ejecuta herramientas en bucle para lograr un objetivo* (Simon Willison). Objetivo → modelo → petición de herramienta → el harness la ejecuta → observación, y vuelta a empezar. Todo lo que rodea al modelo en ese bucle (permisos, límites, identidad, auditoría, recuperación) es el harness, y ahí vive la ingeniería, no dentro del prompt.
+
+Clasificamos cada sistema por la libertad más consecuente que le delegamos, porque la arquitectura sigue a la consecuencia. El modelo puede ser el mismo; lo que cambia es la autoridad y el precio de equivocarse.
+
+| Autoridad | Pregunta típica en datos | Si falla | Control principal | Clases |
+| --- | --- | --- | --- | --- |
+| **Saber** (Know) | "¿Cuántos clientes activos tuvimos en marzo?" | Respuesta incorrecta o no autorizada | Contexto y capa semántica, acceso por identidad, límites, rastro (SQL y fuentes) | 2, 4, 7, 9 |
+| **Hacer** (Do) | "Migra estas tablas y crea el modelo dbt" | Acción incorrecta | Herramientas estrechas, propuesta ≠ ejecución, revisión, idempotencia, auditoría | 2, 5, 6 |
+| **Decidir** (Decide) | "¿Esta transacción se escala a revisión?" | Juicio incorrecto | Evidencia completa, umbrales calibrados, razonamiento estructurado, escalado humano, workflow explícito | 3, 8, 9, 11 |
+
+Principios que se repiten en todas las clases:
+
+- La arquitectura sigue a la consecuencia: primero nombra la autoridad, después el control.
+- Propuesta no es ejecución: el modelo propone; código, permisos y personas deciden.
+- Puede pasar vs debe pasar: el modelo razona en local; los invariantes se codifican en el workflow, no se piden en el prompt.
+- Empieza con la menor libertad que crea valor: SQL fijo → agente → workflow explícito.
+- El contexto importa más que el modelo.
+- Dale esa libertad. Controla todo lo demás.
+
 ### Resultados de aprendizaje
 
 Al terminar el curso serás capaz de:
 
+- Clasificar un sistema de IA sobre datos por la autoridad que delega (saber, hacer, decidir) y nombrar el control que corresponde a cada una.
 - Explicar qué sistemas de datos están preparados para agentes y elegir el stack adecuado para tu caso.
 - Migrar datos de un sistema transaccional a uno analítico con ayuda de agentes, y exponerlo a agentes de forma segura (solo lectura, MCP, capa semántica).
 - Trabajar con chats, copilotos y agentes de código en tareas de datos reales, sabiendo qué nivel de autonomía usar en cada caso.
@@ -113,6 +135,8 @@ Objetivo: entender qué ha cambiado de verdad, qué se pide ahora y el mapa ment
   - OLTP vs OLAP: por qué tu base de datos de producción no es donde debe leer un agente.
   - Data Warehouses vs Data Lakes vs Databases (y lakehouse): qué guarda cada uno, para quién y a qué coste.
   - Vocabulario mínimo de IA: LLM, ventana de contexto, tool calling, agente, MCP, skill, harness.
+  - Qué es un agente: ejecuta herramientas en bucle para lograr un objetivo. El bucle (objetivo → modelo → herramienta → harness → observación) y por qué el harness es donde está la ingeniería.
+  - El gradiente de autoridad aplicado a datos: Saber (responder sobre datos), Hacer (cambiar pipelines, tablas, código) y Decidir (juzgar filas o casos). Mismo modelo, distinta consecuencia; la arquitectura sigue a la consecuencia.
 - ¿Qué sistemas están preparados para los agentes?
   - Criterios: catálogo y metadatos consultables, capa semántica, control de acceso (RBAC, filas y columnas), auditoría, endpoint MCP o API de agentes, funciones de IA en SQL, aislamiento de coste y carga.
   - Por familia: Snowflake (Cortex, MCP gestionado, CoCo), Databricks (Unity Catalog, Genie), BigQuery (MCP remoto, AI.GENERATE), DuckDB/MotherDuck (ligero, local-first), Postgres (pg_duckdb, MCP de solo lectura).
@@ -134,12 +158,13 @@ Objetivo: ver de principio a fin una migración didáctica de una base de datos 
   - Extraer y cargar con un agente de código: `ATTACH` de Postgres desde DuckDB, `CREATE OR REPLACE TABLE ... AS SELECT`, cargas idempotentes y re-ejecutables.
   - Modelado analítico asistido: de tablas normalizadas a un modelo en estrella o capa "silver" con nombres predecibles y grano explícito.
   - Documentación generada y revisada: descripciones de tablas y columnas que serán el contexto de los agentes.
-- Apoyado de agentes para el desarrollo
+- Apoyado de agentes para el desarrollo (autoridad: Hacer)
   - Cómo pedir el trabajo: plan → ejecutar → revisar. Qué revisar siempre y qué automatizar con tests de datos.
+  - El agente propone; tú ejecutas o apruebas. Git y los tests de datos son el registro y la red de seguridad.
   - Errores típicos de los agentes en migraciones (tipos, zonas horarias, claves duplicadas, filtros silenciosos) y cómo detectarlos.
-- Cómo trabajar con agentes ya en el data warehouse
-  - Exponer el warehouse por MCP con un rol de solo lectura.
-  - Preguntar en lenguaje natural desde el chat o desde el agente de código; leer el SQL generado; iterar el contexto hasta que acierte.
+- Cómo trabajar con agentes ya en el data warehouse (autoridad: Saber)
+  - Exponer el warehouse por MCP con un rol de solo lectura. Solo lectura no significa sin control: identidad, límites de turnos y consultas, y rastro.
+  - Preguntar en lenguaje natural desde el chat o desde el agente de código; leer el SQL generado, las tablas fuente y los supuestos; iterar el contexto hasta que acierte.
   - Primer contacto con la capa semántica: por qué "ingresos" necesita una definición antes de que nadie pregunte por ellos.
 - Demo de cierre: la misma pregunta que el agente respondía mal al principio, respondida bien solo por mejorar el contexto. Puente a la Clase 3: qué pasa cuando esto se aplica a casos reales.
 
@@ -149,7 +174,7 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
 
 - Marco de cada caso
   1. Contexto y problema: qué dolía, a quién y cuánto costaba.
-  2. Cómo lo evaluamos: criterio de éxito, riesgos, qué no podía salir mal, dónde tenía que estar el humano.
+  2. Cómo lo evaluamos: qué autoridad delegamos (saber, hacer o decidir) y el precio de equivocarse; criterio de éxito, riesgos, qué no podía salir mal, dónde tenía que estar el humano.
   3. Solución aplicando IA: arquitectura, herramientas, nivel de autonomía.
   4. Resultado y lecciones: qué funcionó, qué no y qué haríamos distinto hoy.
 - Casos (banca y otros sectores)
@@ -159,6 +184,7 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
   - Informes recurrentes con narrativa generada y cifras verificadas.
   - Anti-casos: dónde la IA no compensó y por qué.
 - Patrones que se repiten
+  - Nombra la autoridad, después el control. Empieza con la menor libertad que crea valor.
   - Humano en el bucle donde el error cuesta; automatización total donde el resultado se puede verificar.
   - Decisiones estructuradas antes que texto libre.
   - El contexto importa más que el modelo.
@@ -175,6 +201,8 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
   - Claude: Projects, conectores MCP a tu warehouse, análisis de ficheros, Claude for Excel.
   - Gemini: en Sheets (`=AI()`, Fill with Gemini) y en BigQuery.
   - Cuándo el chat basta (exploración, interpretación, comunicación) y cuándo no (reproducibilidad, escala, gobierno).
+  - Si una consulta fija responde la pregunta, no necesitas un agente: un SQL guardado o un dashboard es más barato y más fiable. El bucle aporta cuando la investigación es dinámica.
+  - Deja rastro: SQL, tablas fuente y supuestos en cada respuesta; abstenerse cuando la evidencia no alcanza.
 - Uso en datos: EDA guiada, traducir insights para stakeholders, generar y contrastar hipótesis, revisar SQL ajeno, documentar.
 - Privacidad y seguridad en chats: qué datos subes, retención, planes empresa vs consumo, anonimización.
 - Ejercicio: el mismo dataset en tres configuraciones (chat sin contexto, chat con esquema y definiciones, chat con conector). Comparar SQL, respuestas y errores.
@@ -189,6 +217,8 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
   - Notebooks: marimo (reactivo, ficheros `.py`, `mo.sql`), Jupyter AI, Hex, Deepnote.
 - Buenas prácticas de trabajo con agentes de código en datos
   - Plan primero; tareas pequeñas y verificables; git como red de seguridad.
+  - Clasifica las herramientas del agente por consecuencia: lectura, lectura sensible (PII), escritura reversible (esquema de desarrollo, rama), escritura consecuente (producción, `DROP`, `DELETE`). Aprobación explícita a partir de la escritura.
+  - Herramientas estrechas, no llaves maestras: `run_readonly_sql` antes que un shell con credenciales de producción. Acceso a la herramienta ≠ permiso del usuario ≠ aprobación de ejecución.
   - Solo lectura por defecto contra bases de datos; credenciales separadas para el agente.
   - Tests de datos como criterio de "hecho" (dbt tests, assertions).
   - Revisión de SQL generado: grano, joins, filtros de fecha, nulos, dobles conteos, tablas equivocadas.
@@ -197,8 +227,9 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
 
 ### Clase 6: Tu harness de datos: AGENTS.md, skills, MCP, hooks y subagentes (Bloque 2)
 
-- Agente = Modelo + Harness. El harness es todo lo que no es el modelo: prompts de sistema, ficheros de instrucciones, herramientas y MCP, skills, hooks, sandbox, orquestación, permisos y observabilidad.
+- Agente = Modelo + Harness. El harness es todo lo que no es el modelo: prompts de sistema, ficheros de instrucciones, herramientas y MCP, skills, hooks, sandbox, orquestación, permisos y observabilidad. En el bucle objetivo → modelo → herramienta → harness → observación, el paso "harness" es donde viven políticas, límites, identidad, auditoría y recuperación.
 - Guías (feedforward) vs sensores (feedback): anticipar errores vs detectarlos y dejar que el agente se corrija. Computacionales (tests, linters, dbt tests) vs inferenciales (LLM-as-judge, revisión).
+- Tres reglas del harness: una descripción de tool no es autorización (la identidad viaja en el contexto de ejecución, no en el prompt); los presupuestos son controles de parada (límite de turnos, de llamadas a herramientas y deadlines); la salida de una herramienta es entrada no confiable. Los controles se suman; el prompt es una capa pequeña.
 - Ficheros de instrucciones: `AGENTS.md` / `CLAUDE.md` para un repo de datos: convenciones de nombres, definiciones de métricas, tablas de referencia, qué no tocar.
 - Agent Skills, estándar abierto: carpetas con `SKILL.md` (name, description, instrucciones, scripts y referencias); progressive disclosure. Skills para datos: cómo modelar en nuestro dbt, cómo perfilar un CSV, checklist de revisión de SQL.
 - MCP (Model Context Protocol): tools, resources y prompts. Servidores relevantes para datos: dbt MCP (capa semántica, `text_to_sql`), Snowflake-managed MCP (Cortex Analyst, Search y Agents como tools), BigQuery MCP remoto, DuckDB y Postgres de solo lectura. Local vs remoto, OAuth, permisos por tool; leer las descripciones de las tools que instalas.
@@ -212,6 +243,8 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
 - Por qué falla text-to-SQL: el esquema crudo no lleva significado de negocio. Casos de "SQL correcto que cuenta lo que no es".
 - Capa "silver" preparada para IA: nombres predecibles, descripciones prescriptivas, grano explícito, métricas complejas precomputadas en el modelo correcto.
 - Capa semántica: métricas, dimensiones y entidades definidas una vez para personas y agentes (dbt Semantic Layer, vistas semánticas de Snowflake y Cortex Analyst, métricas y Genie spaces en Databricks). Cómo la consumen los agentes vía MCP (`list_metrics`, `query_metrics`, `get_dimensions`).
+- Una salida estructurada no es grounding; la capa semántica sí. El esquema valida la forma de la respuesta; el código verifica que las cifras salen de las fuentes que dice.
+- La autorización viaja con la consulta: filas y columnas filtradas por la identidad del usuario antes de entrar en el contexto del modelo, no por instrucciones en el prompt.
 - Context engineering aplicado: el menor conjunto de tokens de alta señal; recuperación just-in-time frente a cargar todo; compactación; "context rot".
 - RAG hoy en datos: recuperación sobre documentación, tickets y definiciones; búsqueda vectorial en el warehouse (Cortex Search, Vector Search) como herramienta del agente, no como sustituto del SQL.
 - Metadatos como producto: catálogo, linaje, owners, frescura. Todo lo que el agente puede consultar antes de responder.
@@ -224,6 +257,9 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
 - De strings a decisiones: cuando lo que necesitas no es texto sino una decisión tipada (categoría, score, ruta, campo extraído) que el software use directamente.
   - "Smart if-statements" en pipelines: clasificar, enrutar, puntuar, extraer y ramificar donde una regla a mano es frágil.
   - Umbrales por confianza: automatizar por encima, revisión humana por debajo.
+- Construye un caso, no un veredicto (autoridad: Decidir). La línea base seductora es `registro → LLM → etiqueta`. El trabajo con consecuencias exige: evidencia completa antes de evaluar, umbrales validados y ruta de política, razonamiento estructurado con procedencia, escalado y rastro duradero. La salida del modelo es una recomendación; la decisión final es del workflow o de una persona.
+  - Puede pasar vs debe pasar: el modelo decide en local (qué evidencia mirar, cómo interpretarla); qué evidencia es obligatoria, qué umbral aplica y cuándo se escala son invariantes que van en código.
+  - Calibración con datos held-out: un score solo sirve para automatizar si más confianza significa más acierto.
 - Modelos de decisión / System One Models (ej. Jev, de TypeSafe AI): estado no estructurado de entrada, valores tipados con probabilidades calibradas de salida; sin errores de tipo; latencias de decenas o cientos de milisegundos y coste órdenes de magnitud menor. Casos: map-reduce sobre grandes volúmenes, tiempo real, verificar, juzgar y guardrails. Sistema 1 (rápido, estructurado) vs Sistema 2 (LLM con razonamiento): cuándo usar cada uno y cómo combinarlos.
 - Fine-tuning y modelos pequeños especializados: cuándo compensan frente a prompts más contexto.
 - Ejercicio: pipeline que clasifica y extrae campos de 10.000 registros de texto libre con (a) LLM y salidas estructuradas y (b) modelo de decisión. Comparar coste, latencia, acuerdo entre ambos y calibración.
@@ -237,6 +273,7 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
   - Informes automáticos con narrativa generada y cifras verificadas contra el warehouse.
   - Agentes de mantenimiento: documentación, linaje, detección de anomalías, optimización de queries.
   - Arquitectura de referencia: fuente → warehouse → capa semántica → MCP/API → agente → interfaz (Streamlit o app) → trazas.
+- Elegir por flujo de control, no por moda: camino predeterminado → código y SQL fijo; la elección dinámica de herramientas aporta valor → bucle de agente; hay que pausar, persistir, inspeccionar u obligar un orden → workflow explícito (LangGraph o el orquestador que ya uses) con agentes acotados dentro. Un workflow no es más inteligente; tiene más invariantes.
 - Observabilidad desde el primer día: trazar cada llamada (prompt, tools, SQL, filas, respuesta). Estas trazas son el insumo de las evals.
 - Ejercicio: prototipo de NLQ e informe automático sobre el warehouse del curso, con trazas guardadas.
 
@@ -251,6 +288,7 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
   - Nivel 2, LLM-as-judge validado contra criterio humano (acuerdo, sesgos, cuándo una métrica es ruido).
   - Nivel 3, A/B y métricas de producto.
 - Evaluar agentes: tool calls, retrieval, multi-turno. ADE-bench como modelo de suite de tareas para datos (tarea, answer key, tests que deciden pasa/no pasa).
+- Evals proporcionales a la autoridad: Saber → fugas de acceso, frescura, citas correctas; Hacer → elección de herramienta, replay de propuestas, escrituras repetidas; Decidir → calibración held-out, tasa de overrides humanos, drift.
 - Ejercicio: 30 trazas del producto de la Clase 9 → taxonomía de fallos → tres evaluadores.
 
 ### Clase 11: Evals II, seguridad y operación (Bloque 4)
@@ -260,7 +298,13 @@ Objetivo: charla entre motivacional y práctica con casos que el instructor ha a
 - Seguridad de agentes de datos
   - Prompt injection vía datos (filas, tickets, documentos) y tool poisoning (descripciones de tools MCP).
   - Exceso de agencia: mínimo privilegio, roles de solo lectura, seguridad a nivel de fila y columna, allowlists de queries, auditoría, aprobación humana para escrituras.
+  - Escrituras seguras: previsualizar el efecto exacto, token de aprobación de un solo uso, clave de idempotencia, y ante un timeout reconciliar antes de reintentar.
   - Red-teaming básico del producto antes que lo hagan otros.
+- Protocolo de manejo: de comportamiento observado a control. Método para convertir cada modo de fallo en un control concreto, por autoridad.
+  - Saber: usa la tabla equivocada → capa semántica y evals de retrieval; datos viejos → frescura y versionado; llega a datos restringidos → filtrado por identidad; rellena huecos con cifras plausibles → umbral de evidencia y abstención; da vueltas → presupuestos y deadlines; no deja rastro → SQL y fuentes citadas.
+  - Hacer: elige la herramienta equivocada → conjunto pequeño y evals de elección; la usa mal → esquemas tipados y validación en servidor; repite una escritura → idempotencia y reconciliación; obedece instrucciones en los datos → salida de herramienta como entrada no confiable; actúa como otro usuario → identidad propagada; actúa en silencio → previsualización, confirmación y auditoría.
+  - Decidir: decide antes de tener la evidencia → campos obligatorios y joins; trata el conflicto como certeza → calibración y escalado; pierde el hilo al fallar → checkpoints durables y nodos idempotentes; no sabe explicar → procedencia y razonamiento estructurado; caso nuevo → interrupción humana y etiqueta de override.
+- La supervisión humana es proporcional a la autoridad: revisión por muestreo en Saber, aprobación por escritura en Hacer, revisión obligatoria por umbral en Decidir.
 - Coste: tokens, caché, modelos pequeños o de decisión para lo repetitivo, batch.
 - Equipos y adopción: quién mantiene el AGENTS.md, las skills y la capa semántica; políticas de uso; cómo medir productividad sin engañarse.
 - Ejercicio: pipeline de CI con evals y un intento de inyección contra el producto propio. Corregir y volver a pasar la suite.
@@ -280,8 +324,9 @@ Producto de datos agéntico con evals, de extremo a extremo:
 3. Harness: `AGENTS.md`, al menos una skill, MCP de solo lectura, hooks.
 4. Un producto a elegir: NLQ gobernado, informe automático o pipeline de decisiones (clasificación/extracción con umbrales de confianza).
 5. Suite de evals (mínimo 20 tareas, evaluadores de código y LLM-as-judge) en CI, más una prueba de seguridad.
+6. Protocolo de manejo de una página: qué autoridad delega el producto (saber, hacer, decidir), qué libertad necesita, los modos de fallo observados en las trazas y el control aplicado a cada uno.
 
-Rúbrica: corrección de datos (30%), diseño de contexto y harness (25%), evals y evidencia (25%), seguridad y gobierno (10%), presentación (10%).
+Rúbrica: corrección de datos (30%), diseño de contexto y harness (25%), evals y evidencia (25%), seguridad, gobierno y protocolo de manejo (10%), presentación (10%).
 
 ## Evaluación y certificación
 
@@ -291,6 +336,7 @@ Rúbrica: corrección de datos (30%), diseño de contexto y harness (25%), evals
 
 ## Lecturas y referencias base
 
+- Simon Willison, "I think 'agent' may finally have a widely enough agreed upon definition to be useful": https://simonw.substack.com/p/i-think-agent-may-finally-have-a
 - Anthropic, "Effective context engineering for AI agents": https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
 - Anthropic, "Equipping agents for the real world with Agent Skills" y especificación Agent Skills: https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills · https://github.com/agentskills/agentskills
 - Birgitta Böckeler (martinfowler.com), "Harness engineering for coding agent users": https://martinfowler.com/articles/harness-engineering.html

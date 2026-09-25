@@ -98,3 +98,22 @@ Thumbs.db
 *.pub
 *.vsd
 *.vsdx
+
+# WS3 scale moment (Class 2): built taxi databases, too large for git and
+# fully reproducible from demos/clase-02/scale/build_sqlite.sh against the
+# downloaded TLC parquet files in the local data/ directory. Keep the
+# .sql/.sh scripts tracked; only the generated databases are ignored.
+demos/clase-02/scale/taxi.sqlite
+demos/clase-02/scale/*.duckdb
+
+# WS4 pipeline (Class 2): D1 extracts and fallback CSVs, regenerated on every
+# demos/clase-02/pipeline/run_all.sh run. Keep the scripts tracked.
+demos/clase-02/pipeline/out/
+# Taxi parquet files: downloaded by demos/clase-02/scale/download-data.py.
+# The folder itself stays in git through .gitkeep and README.md.
+demos/clase-02/scale/data/*.parquet
+demos/clase-02/scale/data/*.part
+
+# Local Class 2 planning notes; public teaching material lives under demos/.
+CLASS2-PLAN.md
+SUMMARY.md

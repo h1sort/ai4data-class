@@ -1,0 +1,49 @@
+-- ============================================================================
+-- RUN THIS BY HAND IN SNOWSIGHT. It is not run by any agent or script.
+-- ============================================================================
+--
+-- Why: `snow` CLI login with authenticator = "externalbrowser" (SAML SSO)
+-- fails on this account:
+--
+--   390190 (08001): Failed to connect to DB: UTBDIAO-WB73342.snowflakecomputing.com:443,
+--   There was an error related to the SAML Identity Provider account parameter.
+--   Contact Snowflake support.
+--
+-- Root cause: this is a fresh trial account with no SAML identity provider
+-- configured, so "externalbrowser" (which IS SAML SSO, not just "open a
+-- browser") has nothing to redirect to. Fix: key-pair (JWT) authentication
+-- instead -- no browser, no MFA, no IdP required, and it's the right choice
+-- for an agent driving the CLI unattended.
+--
+-- An RSA-2048 key pair was already generated locally at:
+--   ~/.snowflake/keys/h1sort_rsa_key.p8   (private key, chmod 600, never leaves this machine)
+--   ~/.snowflake/keys/h1sort_rsa_key.pub  (public key -- not secret)
+--
+-- The one thing that requires a human with a password (key-pair setup itself
+-- can't bootstrap a brand-new user auth method) is registering the PUBLIC
+-- key on the H1SORT user. Steps:
+--
+--   1. Log into Snowsight the normal way (username + password, whatever
+--      worked before externalbrowser was tried -- e.g. the original
+--      trial-signup password, or "Forgot password" if needed).
+--   2. Open a new SQL worksheet.
+--   3. Run the single statement below.
+--   4. Report back "done" so the agent can verify with:
+--        snow connection test -c ai4data
+--
+-- The value below is the PUBLIC key only. Public keys are not secret and are
+-- safe to paste, commit, or share -- this statement contains no password,
+-- token, or private key material.
+-- ============================================================================
+
+ALTER USER H1SORT SET RSA_PUBLIC_KEY='MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3ceKkeHaxhFLtUn7ObcGEJgEy2pMlZzfBfKLAUbI6sXrTHzninStkShnl/XHoRIw2hR881JLa6SVGsyFG60/vWO5WrhfJtb2g3qbWaG9SINC9AQWEakRrkeC1/iYCdSXHWA/pZ8qQGDHC3NDRukPtJNwOciqO8199uCpN7vYRsalObZiwwuom9dMBGogO/ezm1LCUVgZK3pGiFcyXorv2Nt77RB+X4PLEcgHpgQc6+1sEuS7oaM5B8A16voSxWwHG+65CNsyFKkRwo9Ash0K/UTUL99cTmkHFTs9YgwsFwqw/syniQ12XFGMIaKf5ADbRA3/Cy//20H3EQZ7m7q6MQIDAQAB';
+
+-- ============================================================================
+-- Alternative (not used, mentioned for completeness): instead of key-pair
+-- auth, the connections in config.toml could use
+-- authenticator = "username_password_mfa" with the account password. That
+-- still needs a Duo-style MFA prompt on (roughly) every new session, which
+-- is worse for an agent driving the CLI unattended than a passwordless JWT
+-- key. Key-pair auth is the one actually configured; this is a fallback if
+-- the human prefers not to keep a private key on disk.
+-- ============================================================================

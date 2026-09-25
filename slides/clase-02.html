@@ -316,7 +316,7 @@ hr.rule{border:0;border-top:1px solid var(--rule);margin:0}
 /* recap */
 .recap-layout{max-width:980px;margin:0 auto;width:100%}.recap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.65rem,1.6vw,1.25rem);margin-top:clamp(.8rem,2vh,1.3rem)}
 .recap-grid article{padding:clamp(.65rem,1.5vw,1rem);background:var(--paper2);border-top:2px solid var(--accent);min-width:0}
-.recap-grid h3{margin:.65rem 0 .4rem;font-size:clamp(.85rem,1.5vw,1.12rem)}.recap-grid p{font-size:clamp(.72rem,1.12vw,.88rem);line-height:1.45;color:var(--ink-soft)}
+.recap-grid h3{margin:.65rem 0 .4rem;font-size:clamp(.85rem,1.5vw,1.12rem)}.recap-grid p,.recap-grid .bullets li{font-size:clamp(.72rem,1.12vw,.88rem);line-height:1.45;color:var(--ink-soft)}.recap-grid .bullets li strong{color:var(--ink)}
 /* 400 -> 11m hook */
 .hook-content{align-items:center;text-align:center;justify-content:center;max-width:1000px;margin:0 auto;width:100%}
 .hook-small{font-family:var(--mono);font-size:clamp(.76rem,1.5vw,1.15rem);color:#b9b5a8;margin-top:clamp(.7rem,1.6vh,1rem)}
@@ -523,22 +523,22 @@ hr.rule{border:0;border-top:1px solid var(--rule);margin:0}
   <div class="meta"><span>IA PARA DATOS &middot; DE LA TRANSACCI&Oacute;N A LA DECISI&Oacute;N</span><span>Clase 2 &middot; OLTP &rarr; ETL &rarr; OLAP</span></div>
 </section>
 
-<!-- Instructor: recap basado en Clase 1. Distinguir respuesta, navegador y persona; retomar el análisis en vivo y la necesidad de definir las métricas. -->
+<!-- Instructor: recap basado en Clase 1. Retomar el demo en vivo (COUNT(*) de votos ≠ personas; el agente vía MCP sobre D1), la tesis "producir es barato, acordar la verdad no", el paso de jugador a director técnico y las palancas: contexto, tools, evals. Cerrar con la pregunta que quedó abierta. -->
 <section class="slide" id="s2">
   <div class="slide-content recap-layout">
     <div class="section-marker reveal">La clase pasada</div>
-    <h2 class="reveal" style="margin-top:0.65rem;">El c&aacute;lculo sale r&aacute;pido. <em>La definici&oacute;n cuesta.</em></h2>
+    <h2 class="reveal" style="margin-top:0.65rem;">Producir el an&aacute;lisis se volvi&oacute; barato. <em>Acordar qu&eacute; es verdad, no.</em></h2>
     <div class="recap-grid reveal">
-      <article><span class="recap-no">01</span><h3>Primero, el contexto</h3><p>Un agente necesita contexto, herramientas y verificaci&oacute;n para analizar datos.</p></article>
-      <article><span class="recap-no">02</span><h3>Acordar qu&eacute; medimos</h3><p>Una m&eacute;trica cambia cuando cambian la pregunta, el corte o el denominador.</p></article>
-      <article><span class="recap-no">03</span><h3>Contar bien</h3><p>Respuestas &ne; personas: una persona puede responder varias preguntas; un navegador no prueba identidad.</p></article>
+      <article><span class="recap-no">01</span><h3>El demo en vivo</h3><p><span class="ink-mono">SELECT COUNT(*) FROM poll_votes</span> dio ~2,000 votos: no eran personas, ni una sola encuesta. El agente, v&iacute;a MCP sobre D1, cont&oacute; ~360 participantes y cruz&oacute; rol &times; experiencia con IA en menos de un minuto (sin ETL).</p></article>
+      <article><span class="recap-no">02</span><h3>El cuello de botella ya no es el an&aacute;lisis</h3><p>El rol de datos ha cambiado con cada etapa del stack:</p><ul class="bullets"><li><strong>2013:</strong> un servidor y un DBA; solo preguntabas lo que cab&iacute;a ah&iacute;.</li><li><strong>2016:</strong> warehouse en la nube; consultas directas con tus credenciales.</li><li><strong>2020:</strong> modern data stack; ETL y modelos para llegar r&aacute;pido al insight.</li><li><strong>2026:</strong> el agente consulta la fuente cruda; el rol pasa de escribir queries a verificarlos.</li></ul></article>
+      <article><span class="recap-no">03</span><h3>Las palancas del nuevo rol de datos</h3><ul class="bullets"><li><strong>Contexto:</strong> m&aacute;s tokens, peor atenci&oacute;n.</li><li><strong>Tools:</strong> un tool call es c&oacute;digo determinista, ah&iacute; van tus controles.</li><li><strong>Evals:</strong> leer trazas, corregir, volver a leer.</li></ul></article>
     </div>
     <div class="callout note reveal" style="margin-top:clamp(0.65rem,1.5vh,1rem);">
-      <span class="ctxt"><strong>Lo vimos en vivo:</strong> consultar la encuesta fue f&aacute;cil. Defender qu&eacute; significa cada n&uacute;mero requiere criterio.</span>
+      <span class="ctxt"><strong>La pregunta que qued&oacute; abierta:</strong> &iquest;qu&eacute; porcentaje del grupo est&aacute; preparado para trabajar con agentes? Antes de calcularlo: &iquest;qu&eacute; definici&oacute;n y qu&eacute; denominador?</span>
     </div>
   </div>
   <hr class="rule" style="margin-bottom:0.7rem;">
-  <div class="meta"><span>RECAP &middot; CLASE 1</span><span>contexto &middot; definiciones &middot; denominadores &middot; verificaci&oacute;n</span></div>
+  <div class="meta"><span>RECAP &middot; CLASE 1</span><span>votos &ne; personas &middot; contexto &middot; tools &middot; evals</span></div>
 </section>
 
 <!-- Instructor: conectar la sala de ~400 personas con la escala de una aplicación real. Aclarar que los 11,198,026 registros siguientes son viajes NYC, no clientes. -->

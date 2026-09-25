@@ -1,0 +1,34 @@
+{
+  "workspace_host": "https://dbc-df3c4dbf-3ef7.cloud.databricks.com",
+  "notebooks": {
+    "01_business_analytics": {
+      "source": "demos/clase-02/notebooks/01_business_analytics.ipynb",
+      "workspace_path": "/Shared/AI4Data/Clase2/01_business_analytics",
+      "workspace_url": "https://dbc-df3c4dbf-3ef7.cloud.databricks.com/#workspace/Shared/AI4Data/Clase2/01_business_analytics"
+    },
+    "02_ml_classifier": {
+      "source": "demos/clase-02/notebooks/02_ml_classifier.ipynb",
+      "workspace_path": "/Shared/AI4Data/Clase2/02_ml_classifier",
+      "workspace_url": "https://dbc-df3c4dbf-3ef7.cloud.databricks.com/#workspace/Shared/AI4Data/Clase2/02_ml_classifier"
+    },
+    "03_llm_jev": {
+      "source": "demos/clase-02/notebooks/03_llm_jev.ipynb",
+      "workspace_path": "/Shared/AI4Data/Clase2/03_llm_jev",
+      "workspace_url": "https://dbc-df3c4dbf-3ef7.cloud.databricks.com/#workspace/Shared/AI4Data/Clase2/03_llm_jev"
+    }
+  },
+  "training_fixture": {
+    "source": "demos/clase-02/notebooks/training/persona_labels.csv",
+    "workspace_path": "/Shared/AI4Data/Clase2/training/persona_labels.csv"
+  },
+  "genie": {
+    "title": "Clase 1 · Analytics de encuesta",
+    "space_id": "01f1b9020133164e9ffef42225cf323c",
+    "workspace_url": "https://dbc-df3c4dbf-3ef7.cloud.databricks.com/genie/rooms/01f1b9020133164e9ffef42225cf323c",
+    "suggested_question": "¿Cómo se distribuyen las respuestas a «¿Cuál describe mejor tu trabajo principal?»?",
+    "tested_sql": "SELECT respuesta, n_respuestas, porcentaje\nFROM workspace.ai4data.c1_vw_resumen_respuestas\nWHERE pregunta = '¿Cuál describe mejor tu trabajo principal?'\nORDER BY n_respuestas DESC",
+    "smoke_status": "COMPLETED",
+    "smoke_row_count": 6,
+    "conversation_id": "01f1b902019b1327886906ad64f782f2"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "slides": "slides/clase-02.html",
+  "runbook": "demos/clase-02-prompts.md",
+  "working_directory": "repository root",
+  "commands": {
+    "preflight": "uv run demos/clase-02/live.py preflight --remote",
+    "poll": "uv run demos/clase-02/live.py poll",
+    "sqlite": "uv run demos/clase-02/live.py scale --engine sqlite",
+    "duckdb": "uv run demos/clase-02/live.py scale --engine duckdb",
+    "etl_class1": "uv run demos/clase-02/live.py etl --dataset class1",
+    "etl_class2": "uv run demos/clase-02/live.py etl --dataset class2"
+  },
+  "notebooks": [
+    "demos/clase-02/notebooks/01_business_analytics.ipynb",
+    "demos/clase-02/notebooks/02_ml_classifier.ipynb",
+    "demos/clase-02/notebooks/03_llm_jev.ipynb"
+  ],
+  "workspace_links": "demos/clase-02/notebooks/demo-links.json",
+  "fresh_rehearsal": "demos/clase-02/fresh-rehearsal.md",
+  "historical_rehearsal": "demos/clase-02-rehearsal-results.md",
+  "validation_status": "poll, scale, Class 1/2 ETL, remote preflight, all three Serverless notebooks, and Genie SQL/chat smoke passed 2026-09-25; live C2 had zero audience answers, so ML/LLM-Jev used teaching fixtures; see fresh-rehearsal.md"
+}

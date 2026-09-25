@@ -1,0 +1,86 @@
+puesto_texto,persona_esperada,split
+Directora de analítica,ejecutivo,train
+Director de Tecnología,ejecutivo,train
+Chief Data Officer,ejecutivo,train
+VP de Data,ejecutivo,train
+Head of Analytics,ejecutivo,train
+CIO,ejecutivo,train
+CTO de empresa,ejecutivo,train
+Chief Information Officer,ejecutivo,train
+Directivo responsable de BI,ejecutivo,train
+CEO de startup,ejecutivo,train
+VP of Engineering,ejecutivo,train
+Directora de transformación digital,ejecutivo,train
+Gerente de BI,manager,train
+Data Engineering Manager,manager,train
+Product Manager de plataforma,manager,train
+Líder del equipo de analítica,manager,train
+Jefa de ciencia de datos,manager,train
+Engineering Team Lead,manager,train
+Manager de operaciones de datos,manager,train
+Gerente de proyectos de tecnología,manager,train
+Analytics Manager,manager,train
+Responsable de equipo de machine learning,manager,train
+Líder de desarrollo de software,manager,train
+Coordinador de analítica,manager,train
+Analista de datos,practitioner,train
+Ingeniera de datos,practitioner,train
+Data Scientist,practitioner,train
+Machine Learning Engineer,practitioner,train
+Desarrollador SQL,practitioner,train
+Analista de inteligencia de negocios,practitioner,train
+ETL Developer,practitioner,train
+Data Platform Engineer,practitioner,train
+Especialista en calidad de datos,practitioner,train
+Científico de datos,practitioner,train
+BI Developer,practitioner,train
+Ingeniero de machine learning,practitioner,train
+Estudiante de ciencia de datos,estudiante,train
+Estudiante de informática,estudiante,train
+Becario de analítica,estudiante,train
+Intern de ingeniería de datos,estudiante,train
+Alumno de estadística,estudiante,train
+Pasante de business intelligence,estudiante,train
+Estudiante de maestría en IA,estudiante,train
+Practicante universitario de software,estudiante,train
+Data science intern,estudiante,train
+Estudiante de ingeniería,estudiante,train
+Becaria de machine learning,estudiante,train
+Trainee de analítica,estudiante,train
+Diseñador gráfico,otro,train
+Abogada corporativa,otro,train
+Médico internista,otro,train
+Docente de historia,otro,train
+Representante de ventas,otro,train
+Chef de cocina,otro,train
+Arquitecta de interiores,otro,train
+Agente de servicio al cliente,otro,train
+Contador público,otro,train
+Fotógrafa,otro,train
+Técnico de mantenimiento,otro,train
+Psicóloga clínica,otro,train
+Directora de datos,ejecutivo,test
+Head of Data and AI,ejecutivo,test
+Vice President Analytics,ejecutivo,test
+Chief Technology Officer,ejecutivo,test
+Director general de tecnología,ejecutivo,test
+Gerente de producto digital,manager,test
+Líder técnico de BI,manager,test
+People manager de ingeniería,manager,test
+Responsable del equipo de datos,manager,test
+Jefa de analítica,manager,test
+Desarrollador de dashboards,practitioner,test
+Analista de negocio,practitioner,test
+Ingeniera de machine learning,practitioner,test
+Especialista ETL,practitioner,test
+Consultor de ciencia de datos,practitioner,test
+Universitaria de estadística,estudiante,test
+Becario de machine learning,estudiante,test
+Pasante de datos,estudiante,test
+Intern de BI,estudiante,test
+Alumno de ingeniería de software,estudiante,test
+Periodista,otro,test
+Farmacéutica,otro,test
+Diseñador UX,otro,test
+Vendedora de seguros,otro,test
+Odontóloga,otro,test

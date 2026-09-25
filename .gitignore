@@ -66,6 +66,8 @@ Thumbs.db
 # Data and document files
 *.csv
 *.pdf
+# Synthetic human-labeled teaching fixture; not audience response data.
+!demos/clase-02/notebooks/training/persona_labels.csv
 
 # Microsoft Office files
 ~$*

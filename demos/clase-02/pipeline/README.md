@@ -1,5 +1,21 @@
 # WS4 demo pipeline (Class 2)
 
+For the in-class stages, use the ETL-only and poll commands below. The
+[`data contract`](../data-contract.md) defines the stable tables and the
+[`poll MCP steps`](poll-mcp.md) describe the equivalent agent tool call.
+
+```bash
+# From the repository root; extracts D1, loads Databricks, models, reconciles.
+# This run is intentionally ETL-only and never starts AI/Jev classification.
+uv run demos/clase-02/live.py etl --dataset class1
+uv run demos/clase-02/live.py etl --dataset class2
+uv run demos/clase-02/live.py poll
+```
+
+The class 1 business notebook reads `workspace.ai4data.c1_vw_resumen_respuestas`.
+Class 2 keeps its established `dim_participante` and `fct_respuestas` tables.
+Both ETL runs are repeatable and read D1 without writing to it.
+
 D1 → Databricks ETL for the 3-question Clase 2 poll (confianza en análisis
 de IA, puesto, tarea a automatizar), plus the judgment column
 (`ai_classify` vs Jev) and the payoff comparison. This is the reference

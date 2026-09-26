@@ -5,10 +5,16 @@
 # between steps).
 #
 # Usage:
-#   ./04_tests.sh <schema> <group_code_c2> <group_code_c1> <cutoff_utc>
+#   ./04_tests.sh <schema> <group_code_c2> <group_code_c1> <cutoff_utc> [run_id]
 #
 # Exits non-zero and prints a FAIL list if any test's violations > 0 (the
 # two "info:" rows are exempted -- they're just NULL counts, not failures).
+#
+# run_id (WS0, Class 3): optional; when given, this stage's loaded_at/cutoff
+# and D1 source counts are also appended to workspace.<schema>.etl_snapshots
+# (05_snapshot.sql) -- the durable record the freshness demo reads, since the
+# cutoff otherwise only lives in a Delta table COMMENT and the D1 counts only
+# in this script's terminal output.
 
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -19,10 +25,12 @@ SCHEMA="${1:-}"
 GROUP_CODE_C2="${2:-}"
 GROUP_CODE_C1="${3:-}"
 CUTOFF="${4:-}"
+RUN_ID="${5:-manual}"
 require_arg "schema" "$SCHEMA"
 require_arg "group_code_c2" "$GROUP_CODE_C2"
 require_arg "group_code_c1" "$GROUP_CODE_C1"
 require_arg "cutoff_utc" "$CUTOFF"
+guard_schema_group "$SCHEMA" "$GROUP_CODE_C2" "$GROUP_CODE_C1"
 
 echo "[tests] fetching D1 reconciliation counts (cutoff $CUTOFF)"
 D1_COUNTS_JSON=$(cd "$D1_REPO" && npx wrangler d1 execute h1sort-chat --remote --json --command "
@@ -89,5 +97,17 @@ if failures:
 print("\n[tests] all reconciliation/uniqueness/foreign-group checks PASS")
 PYEOF
 status=$?
+
+LOADED_AT="$(date -u +'%Y-%m-%d %H:%M:%S')"
+STATUS_LABEL="PASS"
+[[ $status -eq 0 ]] || STATUS_LABEL="FAIL"
+echo "[tests] recording snapshot: run_id=$RUN_ID loaded_at=$LOADED_AT status=$STATUS_LABEL"
+render_and_run "$SCRIPT_DIR/05_snapshot.sql" \
+  "SCHEMA=$SCHEMA" "RUN_ID=$RUN_ID" "DATASET=class2" \
+  "GROUP_CODES=$GROUP_CODE_C2,$GROUP_CODE_C1" "CUTOFF=$CUTOFF" "LOADED_AT=$LOADED_AT" \
+  "D1_VOTES_CONFIANZA=$D1_VOTES_CONFIANZA" "D1_TEXT_PUESTO=$D1_TEXT_PUESTO" "D1_TEXT_TAREA=$D1_TEXT_TAREA" \
+  "D1_C1_ANSWERS=NULL" "D1_C1_PARTICIPANTS=NULL" \
+  "STATUS=$STATUS_LABEL"
+
 rm -f "$OUT_FILE"
 exit $status

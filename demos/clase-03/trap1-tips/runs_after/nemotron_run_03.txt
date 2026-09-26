@@ -1,0 +1,67 @@
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT 
+  payment_type,
+  COUNT(*) as trips,
+  ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) as pct_total,
+  ROUND(AVG(tip_amount), 2) as avg_tip,
+  ROUND(AVG(CASE WHEN fare_amount > 0 THEN tip_amount / fare_amount * 100 END), 2) as avg_tip_pct
+FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0{1,2,3}.parquet')
+GROUP BY payment_type
+ORDER BY payment_type;
+"
+IO Error: No files found that match the pattern "/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0{1,2,3}.parquet"
+
+LINE 8: FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase...
+             ^
+[0m
+[0m$ [0mls /Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/
+README.md
+yellow_tripdata_2025-01.parquet
+yellow_tripdata_2025-02.parquet
+yellow_tripdata_2025-03.parquet
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT 
+  payment_type,
+  COUNT(*) as trips,
+  ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) as pct_total,
+  ROUND(AVG(tip_amount), 2) as avg_tip,
+  ROUND(AVG(CASE WHEN fare_amount > 0 THEN tip_amount / fare_amount * 100 END), 2) as avg_tip_pct
+FROM (
+  SELECT * FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-01.parquet')
+  UNION ALL
+  SELECT * FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-02.parquet')
+  UNION ALL
+  SELECT * FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-03.parquet')
+)
+GROUP BY payment_type
+ORDER BY payment_type;
+"
+┌──────────────┬─────────┬───────────┬─────────┬─────────────┐
+│ payment_type │  trips  │ pct_total │ avg_tip │ avg_tip_pct │
+│    int64     │  int64  │  double   │ double  │   double    │
+├──────────────┼─────────┼───────────┼─────────┼─────────────┤
+│            0 │ 2263749 │     20.22 │    0.37 │        2.11 │
+│            1 │ 7484734 │     66.84 │    4.15 │       26.72 │
+│            2 │ 1135757 │     10.14 │     0.0 │         0.0 │
+│            3 │   72546 │      0.65 │    0.02 │         0.2 │
+│            4 │  241239 │      2.15 │    0.04 │        0.08 │
+│            5 │       1 │       0.0 │     0.0 │        NULL │
+└──────────────┴─────────┴───────────┴─────────┴─────────────┘
+[0m
+**Solo el pago con tarjeta (`payment_type = 1`) tiene propina registrada en este dataset.**
+
+Según el diccionario oficial TLC: *"tip_amount — This field is automatically populated for credit card tips. Cash tips are not included."*
+
+| payment_type | label (TLC) | viajes | % total | avg_tip | avg_tip_pct |
+|---|---|---:|---:|---:|---:|
+| 1 | Credit card | 7,484,734 | 66.84% | $4.15 | 26.72% |
+| 2 | Cash | 1,135,757 | 10.14% | $0.00 | 0.00% |
+| 0 | Flex Fare / cajón de sastre | 2,263,749 | 20.22% | $0.37 | 2.11% |
+| 3 | No charge | 72,546 | 0.65% | $0.02 | 0.20% |
+| 4 | Dispute | 241,239 | 2.15% | $0.04 | 0.08% |
+
+**Conclusión:** No se puede declarar un "ganador" entre efectivo y tarjeta basándose en `tip_amount`, porque para efectivo (y los demás códigos ≠ 1) el campo es estructuralmente ~0 por no capturarse el dato, no porque los pasajeros no den propina.

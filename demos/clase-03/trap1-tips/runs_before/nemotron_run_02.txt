@@ -1,0 +1,64 @@
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "DESCRIBE SELECT * FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-01.parquet') LIMIT 1"
+[90m┌─────────────────────────────────┐[00m[90m
+[00m[90m│            [00m[1mDescribe[00m[90m             │[00m[90m
+[00m[90m│                                 │[00m[90m
+[00m[90m│ [00mVendorID[90m              [00m[90minteger[00m[90m   [00m[90m│[00m[90m
+[00m[90m│ [00mtpep_pickup_datetime[90m  [00m[90mtimestamp[00m[90m [00m[90m│[00m[90m
+[00m[90m│ [00mtpep_dropoff_datetime[90m [00m[90mtimestamp[00m[90m [00m[90m│[00m[90m
+[00m[90m│ [00mpassenger_count[90m       [00m[90mbigint[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mtrip_distance[90m         [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mRatecodeID[90m            [00m[90mbigint[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mstore_and_fwd_flag[90m    [00m[90mvarchar[00m[90m   [00m[90m│[00m[90m
+[00m[90m│ [00mPULocationID[90m          [00m[90minteger[00m[90m   [00m[90m│[00m[90m
+[00m[90m│ [00mDOLocationID[90m          [00m[90minteger[00m[90m   [00m[90m│[00m[90m
+[00m[90m│ [00mpayment_type[90m          [00m[90mbigint[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mfare_amount[90m           [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mextra[90m                 [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mmta_tax[90m               [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mtip_amount[90m            [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mtolls_amount[90m          [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mimprovement_surcharge[90m [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mtotal_amount[90m          [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mcongestion_surcharge[90m  [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mAirport_fee[90m           [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mcbd_congestion_fee[90m    [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m└─────────────────────────────────┘[00m[90m
+[00m
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT 
+  payment_type,
+  AVG(tip_amount) as avg_tip,
+  COUNT(*) as trip_count,
+  SUM(tip_amount) as total_tips
+FROM read_parquet([
+  '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-01.parquet',
+  '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-02.parquet',
+  '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-03.parquet'
+])
+GROUP BY payment_type
+ORDER BY avg_tip DESC
+"
+┌──────────────┬───────────────────────┬────────────┬────────────────────┐
+│ payment_type │        avg_tip        │ trip_count │     total_tips     │
+│    int64     │        double         │   int64    │       double       │
+├──────────────┼───────────────────────┼────────────┼────────────────────┤
+│            1 │     4.148312455725825 │    7484734 │ 31049015.279994577 │
+│            0 │    0.3708608993311516 │    2263749 │  839535.9899999951 │
+│            4 │  0.041554806644033514 │     241239 │ 10024.640000000001 │
+│            3 │  0.021257546935737323 │      72546 │ 1542.1499999999999 │
+│            2 │ 0.0030931176299155536 │    1135757 │ 3513.0299999999993 │
+│            5 │                   0.0 │          1 │                0.0 │
+└──────────────┴───────────────────────┴────────────┴────────────────────┘
+[0m
+**Payment type 1 (Credit card)** tiene a los pasajeros que dejan más propina, con un promedio de **$4.15** por viaje.
+
+Los otros tipos de pago tienen promedios mucho menores:
+- Type 0 (Voided): $0.37
+- Type 2 (Cash): $0.003
+- Type 3 (No charge): $0.02
+- Type 4 (Dispute): $0.04
+- Type 5 (Unknown): $0.00

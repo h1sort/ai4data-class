@@ -1,0 +1,76 @@
+[0m
+> build · longcat-2.5-preview-free
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "DESCRIBE SELECT * FROM '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-01.parquet' LIMIT 1;"
+[90m┌──────────────────────────────────────────────────────────────────────────────────────────┐[00m[90m
+[00m[90m│ [00m[1m/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-01.parquet[00m[90m │[00m[90m
+[00m[90m│                                                                                          │[00m[90m
+[00m[90m│ [00mVendorID[90m                                                                       [00m[90minteger[00m[90m   [00m[90m│[00m[90m
+[00m[90m│ [00mtpep_pickup_datetime[90m                                                           [00m[90mtimestamp[00m[90m [00m[90m│[00m[90m
+[00m[90m│ [00mtpep_dropoff_datetime[90m                                                          [00m[90mtimestamp[00m[90m [00m[90m│[00m[90m
+[00m[90m│ [00mpassenger_count[90m                                                                [00m[90mbigint[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mtrip_distance[90m                                                                  [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mRatecodeID[90m                                                                     [00m[90mbigint[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mstore_and_fwd_flag[90m                                                             [00m[90mvarchar[00m[90m   [00m[90m│[00m[90m
+[00m[90m│ [00mPULocationID[90m                                                                   [00m[90minteger[00m[90m   [00m[90m│[00m[90m
+[00m[90m│ [00mDOLocationID[90m                                                                   [00m[90minteger[00m[90m   [00m[90m│[00m[90m
+[00m[90m│ [00mpayment_type[90m                                                                   [00m[90mbigint[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mfare_amount[90m                                                                    [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mextra[90m                                                                          [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mmta_tax[90m                                                                        [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mtip_amount[90m                                                                     [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mtolls_amount[90m                                                                   [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mimprovement_surcharge[90m                                                          [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mtotal_amount[90m                                                                   [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mcongestion_surcharge[90m                                                           [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mAirport_fee[90m                                                                    [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mcbd_congestion_fee[90m                                                             [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m└──────────────────────────────────────────────────────────────────────────────────────────┘[00m[90m
+[00m
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT payment_type,
+       COUNT(*) AS trips,
+       ROUND(AVG(tip_amount), 4) AS avg_tip,
+       ROUND(SUM(tip_amount), 2) AS total_tip,
+       ROUND(AVG(tip_amount) / NULLIF(AVG(fare_amount), 0) * 100, 2) AS tip_pct_of_fare
+FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0{1,2,3}.parquet')
+GROUP BY payment_type
+ORDER BY avg_tip DESC;"
+IO Error: No files found that match the pattern "/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0{1,2,3}.parquet"
+
+LINE 7: FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase...
+             ^
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT payment_type,
+       COUNT(*) AS trips,
+       ROUND(AVG(tip_amount), 4) AS avg_tip,
+       ROUND(SUM(tip_amount), 2) AS total_tip,
+       ROUND(AVG(tip_amount) / NULLIF(AVG(fare_amount), 0) * 100, 2) AS tip_pct_of_fare
+FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-*.parquet')
+GROUP BY payment_type
+ORDER BY avg_tip DESC;"
+┌──────────────┬─────────┬─────────┬─────────────┬─────────────────┐
+│ payment_type │  trips  │ avg_tip │  total_tip  │ tip_pct_of_fare │
+│    int64     │  int64  │ double  │   double    │     double      │
+├──────────────┼─────────┼─────────┼─────────────┼─────────────────┤
+│            1 │ 7484734 │  4.1483 │ 31049015.28 │           22.69 │
+│            0 │ 2263749 │  0.3709 │   839535.99 │            2.33 │
+│            4 │  241239 │  0.0416 │    10024.64 │            0.99 │
+│            3 │   72546 │  0.0213 │     1542.15 │            0.32 │
+│            2 │ 1135757 │  0.0031 │     3513.03 │            0.02 │
+│            5 │       1 │     0.0 │         0.0 │            NULL │
+└──────────────┴─────────┴─────────┴─────────────┴─────────────────┘
+[0m
+**La tarjeta de crédito (payment_type = 1)** es la forma de pago con pasajeros que dejan más propina, por amplio margen:
+
+| payment_type | viajes | propina media | propina total | % del fare |
+|---|---|---|---|---|
+| 1 (tarjeta de crédito) | 7.484.734 | **$4,15** | $31.049.015 | 22,69% |
+| 0 (desconocido/void) | 2.263.749 | $0,37 | $839.536 | 2,33% |
+| 4 (disputa) | 241.239 | $0,04 | $10.025 | 0,99% |
+| 3 (sin cargo) | 72.546 | $0,02 | $1.542 | 0,32% |
+| 2 (efectivo) | 1.135.757 | $0,003 | $3.513 | 0,02% |
+
+Los pagos en efectivo (type 2) registran propina ~$0 porque las propinas en cash no se reportan al TLC; la tarjeta de crédito concentra el 97% de la propina total registrada.

@@ -119,3 +119,8 @@ demos/clase-02/scale/data/*.part
 # Local Class 2 planning notes; public teaching material lives under demos/.
 CLASS2-PLAN.md
 SUMMARY.md
+
+# Local Class 3 planning notes and agent reports; public material lives under demos/.
+CLASE3-PLAN.md
+demos/clase-03/reports/
+CLASE3-HANDOFF.md

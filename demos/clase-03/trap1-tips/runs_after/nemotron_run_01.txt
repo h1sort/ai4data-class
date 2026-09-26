@@ -1,0 +1,73 @@
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT 
+    payment_type,
+    COUNT(*) as trips,
+    COUNT(*) * 100.0 / SUM(COUNT(*)) OVER () as pct_total,
+    AVG(tip_amount) as avg_tip,
+    AVG(CASE WHEN fare_amount > 0 THEN tip_amount / fare_amount ELSE NULL END) as avg_tip_pct
+FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0{1,2,3}.parquet')
+GROUP BY payment_type
+ORDER BY payment_type;
+"
+IO Error: No files found that match the pattern "/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0{1,2,3}.parquet"
+
+LINE 8: FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase...
+             ^
+[0m
+[0m$ [0mls -la /Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/
+total 370072
+drwxr-xr-x@  7 Haro  staff       224 Sep 25 09:03 .
+drwxr-xr-x@ 11 Haro  staff       352 Sep 25 10:33 ..
+-rw-r--r--@  1 Haro  staff         0 Sep 25 09:03 .gitkeep
+-rw-r--r--@  1 Haro  staff      1162 Sep 25 09:03 README.md
+-rw-r--r--@  1 Haro  staff  59158238 Sep 25 08:21 yellow_tripdata_2025-01.parquet
+-rw-r--r--@  1 Haro  staff  60343086 Sep 25 08:21 yellow_tripdata_2025-02.parquet
+-rw-r--r--@  1 Haro  staff  69964745 Sep 25 08:21 yellow_tripdata_2025-03.parquet
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT 
+    payment_type,
+    COUNT(*) as trips,
+    COUNT(*) * 100.0 / SUM(COUNT(*)) OVER () as pct_total,
+    AVG(tip_amount) as avg_tip,
+    AVG(CASE WHEN fare_amount > 0 THEN tip_amount / fare_amount ELSE NULL END) as avg_tip_pct
+FROM read_parquet([
+    '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-01.parquet',
+    '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-02.parquet',
+    '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-03.parquet'
+])
+GROUP BY payment_type
+ORDER BY payment_type;
+"
+┌──────────────┬─────────┬───────────────────────┬───────────────────────┬────────────────────────┐
+│ payment_type │  trips  │       pct_total       │        avg_tip        │      avg_tip_pct       │
+│    int64     │  int64  │        double         │        double         │         double         │
+├──────────────┼─────────┼───────────────────────┼───────────────────────┼────────────────────────┤
+│            0 │ 2263749 │    20.215607643704345 │   0.37086089933115235 │    0.02113165760931345 │
+│            1 │ 7484734 │     66.83976265102439 │     4.148312455725826 │     0.2672041108110472 │
+│            2 │ 1135757 │    10.142475111238356 │ 0.0030931176299155536 │ 1.6511399342776913e-05 │
+│            3 │   72546 │    0.6478463257720601 │  0.021257546935737323 │   0.002044835187403424 │
+│            4 │  241239 │     2.154299338115486 │  0.041554806644033514 │  0.0007994051449869029 │
+│            5 │       1 │ 8.930145366692309e-06 │                   0.0 │                   NULL │
+└──────────────┴─────────┴───────────────────────┴───────────────────────┴────────────────────────┘
+[0m
+**Solo el pago con tarjeta (`payment_type = 1`) tiene propina registrada en este dataset.**
+
+| payment_type | label (TLC) | viajes | % total | avg_tip | avg_tip_pct |
+|--------------|-------------|--------|---------|---------|-------------|
+| 0 | Flex Fare / cajón de sastre | 2.263.749 | 20,2 % | 0,37 | 2,1 % |
+| **1** | **Credit card** | **7.484.734** | **66,8 %** | **4,15** | **26,7 %** |
+| 2 | Cash | 1.135.757 | 10,1 % | 0,003 | ~0 % |
+| 3 | No charge | 72.546 | 0,6 % | 0,02 | 0,2 % |
+| 4 | Dispute | 241.239 | 2,2 % | 0,04 | 0,08 % |
+| 5 | Unknown | 1 | ~0 % | 0 | — |
+
+**Por qué no hay "ganador" entre formas de pago:**
+- `tip_amount` **solo se popula para tarjeta** (`payment_type = 1`), según el diccionario oficial TLC: *"This field is automatically populated for credit card tips. Cash tips are not included."*
+- Para efectivo (2), no charge (3), dispute (4), unknown (5) y el código 0, el campo es estructuralmente ~0 **no porque no den propina, sino porque no se captura ahí**.
+- `tip_pct` (= `tip_amount / fare_amount`) **solo está definida y es comparable cuando `payment_type = 1` y `fare_amount > 0`**.
+
+**Advertencia de calidad:** El código `0` (20,2 % de las filas, 2,26 M viajes) es demasiado grande para ser solo "Flex Fare" real; trátalo como dato de calidad desconocida, no como categoría interpretable.

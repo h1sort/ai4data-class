@@ -1,0 +1,70 @@
+[0m
+> build · big-pickle
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT payment_type,
+       count(*) AS rows,
+       round(100.0*count(*)/sum(count(*)) OVER (), 2) AS pct_rows,
+       round(avg(tip_amount), 4) AS avg_tip,
+       round(avg(tip_amount)/nullif(avg(fare_amount),0), 4) AS avg_tip_pct,
+       round(100.0*count(*) FILTER (tip_amount > 0)/count(*), 2) AS pct_rows_tipping
+FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0*.parquet')
+GROUP BY payment_type ORDER BY payment_type;
+"
+┌──────────────┬─────────┬──────────┬─────────┬─────────────┬──────────────────┐
+│ payment_type │  rows   │ pct_rows │ avg_tip │ avg_tip_pct │ pct_rows_tipping │
+│    int64     │  int64  │  double  │ double  │   double    │      double      │
+├──────────────┼─────────┼──────────┼─────────┼─────────────┼──────────────────┤
+│            0 │ 2263749 │    20.22 │  0.3709 │      0.0233 │             8.43 │
+│            1 │ 7484734 │    66.84 │  4.1483 │      0.2269 │             93.9 │
+│            2 │ 1135757 │    10.14 │  0.0031 │      0.0002 │             0.05 │
+│            3 │   72546 │     0.65 │  0.0213 │      0.0032 │             0.52 │
+│            4 │  241239 │     2.15 │  0.0416 │      0.0099 │             0.74 │
+│            5 │       1 │      0.0 │     0.0 │        NULL │              0.0 │
+└──────────────┴─────────┴──────────┴─────────┴─────────────┴──────────────────┘
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT count(*) AS total_filas,
+       count(*) FILTER (payment_type = 0) AS filas_pt0,
+       round(100.0*count(*) FILTER (payment_type = 0)/count(*), 2) AS pct_pt0
+FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0*.parquet');
+"
+┌─────────────┬───────────┬─────────┐
+│ total_filas │ filas_pt0 │ pct_pt0 │
+│    int64    │   int64   │ double  │
+├─────────────┼───────────┼─────────┤
+│    11198026 │   2263749 │   20.22 │
+└─────────────┴───────────┴─────────┘
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT count(*) AS viajes_tarjeta,
+       round(median(tip_amount/fare_amount), 4) AS tip_pct_mediana,
+       round(avg(tip_amount/fare_amount), 4) AS tip_pct_media
+FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0*.parquet')
+WHERE payment_type = 1 AND fare_amount > 0;
+"
+┌────────────────┬─────────────────┬───────────────┐
+│ viajes_tarjeta │ tip_pct_mediana │ tip_pct_media │
+│     int64      │     double      │    double     │
+├────────────────┼─────────────────┼───────────────┤
+│        7484459 │          0.2702 │        0.2672 │
+└────────────────┴─────────────────┴───────────────┘
+[0m
+**La pregunta no tiene respuesta válida: no hay "ganador" entre formas de pago.**
+
+Según el diccionario de TLC, `tip_amount` "is automatically populated for credit card tips. Cash tips are not included." O sea, la propina solo se captura con tarjeta (`payment_type = 1`); en los demás códigos el ~0 es falta de captura, no ausencia de propina.
+
+| payment_type | filas | % filas | avg tip | % filas con tip>0 |
+|---|---|---|---|---|
+| 0 (Flex Fare) | 2.263.749 | 20,22 % | 0,3709 | 8,43 % |
+| 1 (tarjeta) | 7.484.734 | 66,84 % | 4,1483 | 93,90 % |
+| 2 (efectivo) | 1.135.757 | 10,14 % | 0,0031 | 0,05 % |
+| 3 (no charge) | 72.546 | 0,65 % | 0,0213 | 0,52 % |
+| 4 (disputa) | 241.239 | 2,15 % | 0,0416 | 0,74 % |
+| 5 (unknown) | 1 | 0,00 % | 0,0000 | 0,00 % |
+
+Con 93,9 % de los viajes con tarjeta thermocargando propina frente al 0,05 % en efectivo, la comparación es artefacto de medición, no comportamiento del pasajero.
+
+Lo único interpretable: dentro de `payment_type = 1` y `fare_amount > 0` (7.484.459 viajes), el `tip_pct` medio es **0,2672** y la mediana **0,2702**.
+
+Advertencia de calidad: `payment_type = 0` son 2.263.749 filas (20,22 % del total de 11.198.026) — demasiado grande para ser solo "Flex Fare"; tratalo como cajón de sastre, y sus 8,43 % de "propina" también es dato no confiable.

@@ -1,0 +1,39 @@
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "SELECT * FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-01.parquet') LIMIT 1"
+┌──────────┬──────────────────────┬───────────────────────┬─────────────────┬───────────────┬────────────┬────────────────────┬──────────────┬──────────────┬──────────────┬─────────────┬────────┬─────────┬────────────┬──────────────┬───────────────────────┬──────────────┬──────────────────────┬─────────────┬────────────────────┐
+│ VendorID │ tpep_pickup_datetime │ tpep_dropoff_datetime │ passenger_count │ trip_distance │ RatecodeID │ store_and_fwd_flag │ PULocationID │ DOLocationID │ payment_type │ fare_amount │ extra  │ mta_tax │ tip_amount │ tolls_amount │ improvement_surcharge │ total_amount │ congestion_surcharge │ Airport_fee │ cbd_congestion_fee │
+│  int32   │      timestamp       │       timestamp       │      int64      │    double     │   int64    │      varchar       │    int32     │    int32     │    int64     │   double    │ double │ double  │   double   │    double    │        double         │    double    │        double        │   double    │       double       │
+├──────────┼──────────────────────┼───────────────────────┼─────────────────┼───────────────┼────────────┼────────────────────┼──────────────┼──────────────┼──────────────┼─────────────┼────────┼─────────┼────────────┼──────────────┼───────────────────────┼──────────────┼──────────────────────┼─────────────┼────────────────────┤
+│        1 │ 2025-01-01 00:18:38  │ 2025-01-01 00:26:59   │               1 │           1.6 │          1 │ N                  │          229 │          237 │            1 │        10.0 │    3.5 │     0.5 │        3.0 │          0.0 │                   1.0 │         18.0 │                  2.5 │         0.0 │                0.0 │
+└──────────┴──────────────────────┴───────────────────────┴─────────────────┴───────────────┴────────────┴────────────────────┴──────────────┴──────────────┴──────────────┴─────────────┴────────┴─────────┴────────────┴──────────────┴───────────────────────┴──────────────┴──────────────────────┴─────────────┴────────────────────┘
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT 
+    payment_type,
+    COUNT(*) as trip_count,
+    AVG(tip_amount) as avg_tip,
+    SUM(tip_amount) as total_tips,
+    MAX(tip_amount) as max_tip
+FROM read_parquet([
+    '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-01.parquet',
+    '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-02.parquet',
+    '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-03.parquet'
+])
+GROUP BY payment_type
+ORDER BY avg_tip DESC
+"
+┌──────────────┬────────────┬───────────────────────┬────────────────────┬─────────┐
+│ payment_type │ trip_count │        avg_tip        │     total_tips     │ max_tip │
+│    int64     │   int64    │        double         │       double       │ double  │
+├──────────────┼────────────┼───────────────────────┼────────────────────┼─────────┤
+│            1 │    7484734 │     4.148312455725826 │  31049015.27999458 │   440.0 │
+│            0 │    2263749 │    0.3708608993311524 │   839535.989999997 │   76.56 │
+│            4 │     241239 │  0.041554806644033514 │ 10024.640000000001 │  123.34 │
+│            3 │      72546 │  0.021257546935737323 │ 1542.1499999999999 │   220.0 │
+│            2 │    1135757 │ 0.0030931176299155536 │ 3513.0299999999993 │   41.13 │
+│            5 │          1 │                   0.0 │                0.0 │     0.0 │
+└──────────────┴────────────┴───────────────────────┴────────────────────┴─────────┘
+[0m
+**Payment type 1 (Credit card)** — passengers paying by credit card leave the highest average tip at **$4.15** per trip, far above cash ($0.003) or other methods.

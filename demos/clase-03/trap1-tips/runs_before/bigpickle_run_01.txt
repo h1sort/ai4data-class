@@ -1,0 +1,92 @@
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la /Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/
+total 370072
+drwxr-xr-x@  7 Haro  staff       224 Sep 25 09:03 .
+drwxr-xr-x@ 11 Haro  staff       352 Sep 25 10:33 ..
+-rw-r--r--@  1 Haro  staff         0 Sep 25 09:03 .gitkeep
+-rw-r--r--@  1 Haro  staff      1162 Sep 25 09:03 README.md
+-rw-r--r--@  1 Haro  staff  59158238 Sep 25 08:21 yellow_tripdata_2025-01.parquet
+-rw-r--r--@  1 Haro  staff  60343086 Sep 25 08:21 yellow_tripdata_2025-02.parquet
+-rw-r--r--@  1 Haro  staff  69964745 Sep 25 08:21 yellow_tripdata_2025-03.parquet
+[0m
+I'll query the NYC taxi data to find which payment type leaves the most tips.
+[0m$ [0m/opt/homebrew/bin/duckdb -c "SELECT payment_type, count(*) FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0*.parquet') GROUP BY 1 ORDER BY 1;"
+┌──────────────┬──────────────┐
+│ payment_type │ count_star() │
+│    int64     │    int64     │
+├──────────────┼──────────────┤
+│            0 │      2263749 │
+│            1 │      7484734 │
+│            2 │      1135757 │
+│            3 │        72546 │
+│            4 │       241239 │
+│            5 │            1 │
+└──────────────┴──────────────┘
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT
+  CASE payment_type
+    WHEN 1 THEN '1 - Tarjeta de crédito'
+    WHEN 2 THEN '2 - Efectivo'
+    WHEN 3 THEN '3 - Sin cargo'
+    WHEN 4 THEN '4 - Disputa'
+    ELSE '0 - Otro/desconocido'
+  END AS tipo_pago,
+  count(*) AS viajes,
+  count(tip_amount) AS viajes_con_propina,
+  round(avg(tip_amount), 3) AS propina_promedio,
+  round(avg(total_amount), 3) AS total_promedio,
+  round(avg(tip_amount / NULLIF(total_amount, 0)) * 100, 2) AS pct_promedio_del_total
+FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0*.parquet')
+WHERE payment_type IS NOT NULL
+GROUP BY 1
+ORDER BY propina_promedio DESC;"
+┌────────────────────────┬─────────┬────────────────────┬──────────────────┬────────────────┬────────────────────────┐
+│       tipo_pago        │ viajes  │ viajes_con_propina │ propina_promedio │ total_promedio │ pct_promedio_del_total │
+│        varchar         │  int64  │       int64        │      double      │     double     │         double         │
+├────────────────────────┼─────────┼────────────────────┼──────────────────┼────────────────┼────────────────────────┤
+│ 1 - Tarjeta de crédito │ 7484734 │            7484734 │            4.148 │         28.468 │                  14.52 │
+│ 0 - Otro/desconocido   │ 2263750 │            2263750 │            0.371 │         21.206 │                   1.15 │
+│ 4 - Disputa            │  241239 │             241239 │            0.042 │          4.483 │                  -0.48 │
+│ 3 - Sin cargo          │   72546 │              72546 │            0.021 │          8.507 │                  -0.02 │
+│ 2 - Efectivo           │ 1135757 │            1135757 │            0.003 │         21.706 │                  -0.01 │
+└────────────────────────┴─────────┴────────────────────┴──────────────────┴────────────────┴────────────────────────┘
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT
+  CASE payment_type WHEN 1 THEN '1 - Credito' WHEN 2 THEN '2 - Efectivo' WHEN 3 THEN '3 - Sin cargo' WHEN 4 THEN '4 - Disputa' ELSE '0 - Otro' END AS tipo_pago,
+  percentile_disc(0.5) WITHIN GROUP (ORDER BY tip_amount) AS mediana_propina,
+  max(tip_amount) AS max_propina,
+  sum(CASE WHEN tip_amount > 0 THEN 1 ELSE 0 END) AS con_propina,
+  round(100.0 * sum(CASE WHEN tip_amount > 0 THEN 1 ELSE 0 END) / count(*), 2) AS pct_viajes_con_propina
+FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0*.parquet')
+GROUP BY 1 ORDER BY 2 DESC;"
+┌───────────────┬─────────────────┬─────────────┬─────────────┬────────────────────────┐
+│   tipo_pago   │ mediana_propina │ max_propina │ con_propina │ pct_viajes_con_propina │
+│    varchar    │     double      │   double    │   int128    │         double         │
+├───────────────┼─────────────────┼─────────────┼─────────────┼────────────────────────┤
+│ 1 - Credito   │             3.2 │       440.0 │     7027936 │                   93.9 │
+│ 3 - Sin cargo │             0.0 │       220.0 │         376 │                   0.52 │
+│ 4 - Disputa   │             0.0 │      123.34 │        1792 │                   0.74 │
+│ 2 - Efectivo  │             0.0 │       41.13 │         573 │                   0.05 │
+│ 0 - Otro      │             0.0 │       76.56 │      190823 │                   8.43 │
+└───────────────┴─────────────────┴─────────────┴─────────────┴────────────────────────┘
+[0m
+**Tarjeta de crédito (`payment_type = 1`)**, claramente.
+
+| Tipo de pago | Viajes | Propina prom. | Mediana | % viajes con propina |
+|---|---|---|---|---|
+| **1 - Crédito** | 7.484.734 | **$4,15** | $3,20 | **93,9%** |
+| 0 - Otro/desconocido | 2.263.750 | $0,37 | $0,00 | 8,4% |
+| 4 - Disputa | 241.239 | $0,04 | $0,00 | 0,7% |
+| 3 - Sin cargo | 72.546 | $0,02 | $0,00 | 0,5% |
+| 2 - Efectivo | 1.135.757 | $0,003 | $0,00 | 0,05% |
+
+Sobre los ~11,2 M de viajes (ene–mar 2025):
+
+- Los pasajeros que pagan con **tarjeta de crédito dejan ~14,5% del total del viaje en propina** (mediana $3,20, hasta $440), muy por encima del ~20% de propina típico customary.
+- En **efivo el 99,95% de los viajes registra $0 de propina** — no es que no den propina, es que `tip_amount` solo se captura con pagos electrónicos; la propina en efectivo no existe en el dataset. Por eso la comparación de montos absolutos entre crédito y efectivo está sesgada.
+- La pregunta equivalente y mejor respondida es: **entre los pagos con propina registrada, la tarjeta domina** (credenciales = único canal que las registra), y entre los tipos no-tarjeta ningún grupo aporta una propina comparable.
+- Los 2,26 M de `payment_type = 0` (desconocido) son un grupo grande y no concluyente: son繼ABELAYA... no, son en su mayoría sin propina (8,4% con propina), consistente con efectivo u otros métodos no registrados.

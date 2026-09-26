@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 430" role="img" aria-label="Bucle del agente: GOAL, MODEL, TOOL REQUEST, HARNESS EXECUTES, OBSERVATION, vuelve a MODEL">
+  <title>Bucle del agente (Simon Willison): un LLM corre herramientas en bucle para lograr un objetivo</title>
+  <defs>
+    <marker id="al-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d23a26"/>
+    </marker>
+  </defs>
+  <!-- GOAL -->
+  <rect x="20" y="175" width="150" height="90" rx="8" fill="#eeede6" stroke="#ccc9be" stroke-width="1.5"/>
+  <text x="95" y="212" font-family="'Space Mono',ui-monospace,monospace" font-size="18" font-weight="700" fill="#1a1915" text-anchor="middle">GOAL</text>
+  <text x="95" y="234" font-family="'Space Mono',ui-monospace,monospace" font-size="11" fill="#46443c" text-anchor="middle">objetivo</text>
+  <!-- MODEL -->
+  <rect x="300" y="50" width="180" height="90" rx="8" fill="rgba(210,58,38,0.10)" stroke="#d23a26" stroke-width="1.5"/>
+  <text x="390" y="87" font-family="'Space Mono',ui-monospace,monospace" font-size="18" font-weight="700" fill="#d23a26" text-anchor="middle">MODEL</text>
+  <text x="390" y="109" font-family="'Space Mono',ui-monospace,monospace" font-size="11" fill="#46443c" text-anchor="middle">el LLM decide</text>
+  <!-- TOOL REQUEST -->
+  <rect x="620" y="50" width="200" height="90" rx="8" fill="#eeede6" stroke="#ccc9be" stroke-width="1.5"/>
+  <text x="720" y="87" font-family="'Space Mono',ui-monospace,monospace" font-size="16" font-weight="700" fill="#1a1915" text-anchor="middle">TOOL REQUEST</text>
+  <text x="720" y="109" font-family="'Space Mono',ui-monospace,monospace" font-size="11" fill="#46443c" text-anchor="middle">pide una herramienta</text>
+  <!-- HARNESS EXECUTES -->
+  <rect x="620" y="300" width="200" height="90" rx="8" fill="#eeede6" stroke="#ccc9be" stroke-width="1.5"/>
+  <text x="720" y="337" font-family="'Space Mono',ui-monospace,monospace" font-size="15" font-weight="700" fill="#1a1915" text-anchor="middle">HARNESS EXECUTES</text>
+  <text x="720" y="359" font-family="'Space Mono',ui-monospace,monospace" font-size="11" fill="#46443c" text-anchor="middle">el harness ejecuta</text>
+  <!-- OBSERVATION -->
+  <rect x="300" y="300" width="180" height="90" rx="8" fill="#eeede6" stroke="#ccc9be" stroke-width="1.5"/>
+  <text x="390" y="337" font-family="'Space Mono',ui-monospace,monospace" font-size="18" font-weight="700" fill="#1a1915" text-anchor="middle">OBSERVATION</text>
+  <text x="390" y="359" font-family="'Space Mono',ui-monospace,monospace" font-size="11" fill="#46443c" text-anchor="middle">vuelve como contexto</text>
+
+  <!-- arrows -->
+  <line x1="171" y1="222" x2="296" y2="103" stroke="#d23a26" stroke-width="2.5" marker-end="url(#al-arrow)"/>
+  <line x1="481" y1="95" x2="616" y2="95" stroke="#d23a26" stroke-width="2.5" marker-end="url(#al-arrow)"/>
+  <line x1="720" y1="141" x2="720" y2="296" stroke="#d23a26" stroke-width="2.5" marker-end="url(#al-arrow)"/>
+  <line x1="619" y1="345" x2="484" y2="345" stroke="#d23a26" stroke-width="2.5" marker-end="url(#al-arrow)"/>
+  <line x1="390" y1="299" x2="390" y2="144" stroke="#d23a26" stroke-width="2.5" marker-end="url(#al-arrow)"/>
+  <text x="410" y="222" font-family="'Space Mono',ui-monospace,monospace" font-size="20" font-weight="700" fill="#d23a26">&#8635;</text>
+  <text x="432" y="218" font-family="'Space Mono',ui-monospace,monospace" font-size="11" fill="#46443c">la observación vuelve al</text>
+  <text x="432" y="232" font-family="'Space Mono',ui-monospace,monospace" font-size="11" fill="#46443c">modelo como contexto nuevo</text>
+</svg>

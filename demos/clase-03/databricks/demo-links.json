@@ -1,0 +1,23 @@
+{
+  "workspace_host": "https://dbc-df3c4dbf-3ef7.cloud.databricks.com",
+  "notebooks": {
+    "10_trap2_walkthrough": {
+      "source": "demos/clase-03/databricks/10_trap2_walkthrough.ipynb",
+      "workspace_path": "/Shared/AI4Data/Clase3/10_trap2_walkthrough",
+      "workspace_url": "https://dbc-df3c4dbf-3ef7.cloud.databricks.com/#workspace/Shared/AI4Data/Clase3/10_trap2_walkthrough"
+    }
+  },
+  "genie": {
+    "title": "Clase 3 · Personas de Clase 2 (Jev vs ai_classify)",
+    "space_id": "01f1b9c1000c11369a488c3037b59db1",
+    "workspace_url": "https://dbc-df3c4dbf-3ef7.cloud.databricks.com/genie/rooms/01f1b9c1000c11369a488c3037b59db1",
+    "suggested_question": "¿Cuántos ejecutivos hay en la clase?",
+    "tested_sql": "SELECT\n  SUM(CASE WHEN persona_jev = 'ejecutivo' THEN 1 ELSE 0 END) AS ejecutivos_jev,\n  SUM(CASE WHEN persona_ai_classify = 'ejecutivo' THEN 1 ELSE 0 END) AS ejecutivos_ai_classify,\n  COUNT(*) AS total_clasificados\nFROM workspace.ai4data.c3_personas_v1",
+    "smoke_status": "COMPLETED",
+    "smoke_result_columns": [],
+    "smoke_result_rows": [],
+    "smoke_generated_sql": "SELECT\n  SUM(CASE WHEN `persona_jev` = 'ejecutivo' THEN 1 ELSE 0 END) AS ejecutivos_jev,\n  SUM(CASE WHEN `persona_ai_classify` = 'ejecutivo' THEN 1 ELSE 0 END) AS ejecutivos_ai_classify,\n  COUNT(*) AS total_clasificados\nFROM `workspace`.`ai4data`.`c3_personas_v1`",
+    "smoke_text_answer": "Hay **9 ejecutivos** según la clasificación persona_jev y **7 ejecutivos** según persona_ai_classify, de un total de **165 participantes clasificados**. Esto muestra una diferencia entre los dos métodos de clasificación para el puesto de ejecutivo.",
+    "conversation_id": "01f1b9c16ce51d3199a5a6cafc1d9c84"
+  }
+}

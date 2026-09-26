@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # Reconcile the C1 models against a same-cutoff D1 aggregate without returning
-# participant identifiers. Usage: ./04_c1_tests.sh <schema> <group_code_c1> <cutoff_utc>
+# participant identifiers. Usage:
+#   ./04_c1_tests.sh <schema> <group_code_c1> <cutoff_utc> [run_id]
+#
+# run_id (WS0, Class 3): optional; when given, this stage's loaded_at/cutoff
+# and D1 source counts are also appended to workspace.<schema>.etl_snapshots
+# (05_snapshot.sql) -- the durable record the freshness demo reads, since the
+# cutoff otherwise only lives in a Delta table COMMENT and the D1 counts only
+# in this script's terminal output.
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/_lib.sh"
@@ -8,6 +15,7 @@ source "$SCRIPT_DIR/_lib.sh"
 SCHEMA="${1:-}"
 GROUP_CODE_C1="${2:-}"
 CUTOFF="${3:-}"
+RUN_ID="${4:-manual}"
 require_arg "schema" "$SCHEMA"
 require_arg "group_code_c1" "$GROUP_CODE_C1"
 require_arg "cutoff_utc" "$CUTOFF"
@@ -23,6 +31,7 @@ if [[ ! "$CUTOFF" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]][0-9]{2}:[0-9]{2}:[0-
   echo "error: cutoff must be UTC 'YYYY-MM-DD HH:MM:SS'" >&2
   exit 2
 fi
+guard_schema_group "$SCHEMA" "$GROUP_CODE_C1"
 
 echo "[c1_tests] fetching D1 response and participant counts at cutoff $CUTOFF"
 D1_COUNTS_JSON="$(cd "$D1_REPO" && npx wrangler d1 execute h1sort-chat --remote --json --command "
@@ -56,6 +65,7 @@ render_and_run "$SCRIPT_DIR/04_c1_tests.sql" \
   "D1_ANSWER_COUNT=$D1_ANSWER_COUNT" \
   "D1_PARTICIPANT_COUNT=$D1_PARTICIPANT_COUNT" | tee "$OUT_FILE"
 
+set +e
 python3 - "$OUT_FILE" <<'PYEOF'
 import re
 import sys
@@ -87,3 +97,18 @@ if failures:
     sys.exit(1)
 print("[c1_tests] all C1 reconciliation, uniqueness, and aggregate checks PASS")
 PYEOF
+TEST_STATUS=$?
+set -e
+
+LOADED_AT="$(date -u +'%Y-%m-%d %H:%M:%S')"
+STATUS_LABEL="PASS"
+[[ $TEST_STATUS -eq 0 ]] || STATUS_LABEL="FAIL"
+echo "[c1_tests] recording snapshot: run_id=$RUN_ID loaded_at=$LOADED_AT status=$STATUS_LABEL"
+render_and_run "$SCRIPT_DIR/05_snapshot.sql" \
+  "SCHEMA=$SCHEMA" "RUN_ID=$RUN_ID" "DATASET=class1" \
+  "GROUP_CODES=$GROUP_CODE_C1" "CUTOFF=$CUTOFF" "LOADED_AT=$LOADED_AT" \
+  "D1_VOTES_CONFIANZA=NULL" "D1_TEXT_PUESTO=NULL" "D1_TEXT_TAREA=NULL" \
+  "D1_C1_ANSWERS=$D1_ANSWER_COUNT" "D1_C1_PARTICIPANTS=$D1_PARTICIPANT_COUNT" \
+  "STATUS=$STATUS_LABEL"
+
+exit $TEST_STATUS

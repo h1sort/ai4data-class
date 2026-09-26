@@ -21,6 +21,7 @@ CUTOFF="${4:-$(date -u +'%Y-%m-%d %H:%M:%S')}"
 require_arg "schema" "$SCHEMA"
 require_arg "group_code_c2" "$GROUP_CODE_C2"
 require_arg "group_code_c1" "$GROUP_CODE_C1"
+guard_schema_group "$SCHEMA" "$GROUP_CODE_C2" "$GROUP_CODE_C1"
 
 load_env
 echo "[model] schema=$SCHEMA c2=$GROUP_CODE_C2 c1=$GROUP_CODE_C1 cutoff=$CUTOFF"

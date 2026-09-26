@@ -1,0 +1,42 @@
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT 
+    payment_type,
+    COUNT(*) as trips,
+    ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) as pct_total,
+    ROUND(AVG(tip_amount), 2) as avg_tip,
+    ROUND(AVG(CASE WHEN fare_amount > 0 THEN tip_amount / fare_amount END) * 100, 2) as avg_tip_pct,
+    SUM(tip_amount) as total_tips
+FROM read_parquet([
+    '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-01.parquet',
+    '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-02.parquet',
+    '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-03.parquet'
+])
+GROUP BY payment_type
+ORDER BY payment_type;
+"
+┌──────────────┬─────────┬───────────┬─────────┬─────────────┬────────────────────┐
+│ payment_type │  trips  │ pct_total │ avg_tip │ avg_tip_pct │     total_tips     │
+│    int64     │  int64  │  double   │ double  │   double    │       double       │
+├──────────────┼─────────┼───────────┼─────────┼─────────────┼────────────────────┤
+│            0 │ 2263749 │     20.22 │    0.37 │        2.11 │  839535.9899999968 │
+│            1 │ 7484734 │     66.84 │    4.15 │       26.72 │  31049015.27999458 │
+│            2 │ 1135757 │     10.14 │     0.0 │         0.0 │ 3513.0299999999993 │
+│            3 │   72546 │      0.65 │    0.02 │         0.2 │ 1542.1499999999999 │
+│            4 │  241239 │      2.15 │    0.04 │        0.08 │           10024.64 │
+│            5 │       1 │       0.0 │     0.0 │        NULL │                0.0 │
+└──────────────┴─────────┴───────────┴─────────┴─────────────┴────────────────────┘
+[0m
+**Solo el pago con tarjeta (`payment_type = 1`) tiene propina registrada** en este dataset. Según el diccionario oficial de TLC: *"tip_amount — This field is automatically populated for credit card tips. Cash tips are not included."*
+
+| payment_type | label (TLC) | viajes | % total | avg_tip | avg_tip_pct |
+|---|---|---|---|---|---|
+| 1 | Credit card | 7,484,734 | 66.84% | $4.15 | 26.72% |
+| 2 | Cash | 1,135,757 | 10.14% | $0.00 | 0.00% |
+| 0 | Flex Fare / cajón de sastre | 2,263,749 | 20.22% | $0.37 | 2.11% |
+
+**Advertencia de calidad:** `payment_type = 0` son **2.263.749 filas (20.22%)** — demasiado grande para ser solo "Flex Fare" real; trátalo como dato de calidad desconocida.
+
+No se puede declarar un "ganador" entre efectivo/tarjeta/otros basado en `tip_amount`, porque el campo **no captura propinas en efectivo** (ni en los otros códigos 3, 4, 5, 6). La métrica `tip_pct` solo está definida y es comparable para `payment_type = 1` y `fare_amount > 0`.

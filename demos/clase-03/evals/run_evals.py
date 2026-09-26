@@ -94,6 +94,10 @@ def main() -> int:
         print(line)
     print(rule)
 
+    if args.mode == "both":
+        # In the teaching run, red before and green after is the expected result.
+        contrast_ok = all(not r["before"] and r["after"] for r in rows.values())
+        return 0 if contrast_ok else 1
     all_ok = all(v for r in rows.values() for v in r.values())
     return 0 if all_ok else 1
 

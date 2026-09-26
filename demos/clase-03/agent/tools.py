@@ -77,12 +77,19 @@ def _d1_live_count() -> tuple[int, str]:
         "(SELECT COUNT(*) FROM poll_text_answers t JOIN polls p ON p.id = t.poll_id "
         f"JOIN poll_groups g ON g.id = p.group_id WHERE g.code = '{D1_GROUP_C2}') AS n"
     )
-    proc = subprocess.run(
-        ["npx", "wrangler", "d1", "execute", "h1sort-chat", "--remote", "--json", "--command", sql],
-        cwd=d1_repo, capture_output=True, text=True, timeout=60,
-    )
-    payload = json.loads(proc.stdout)
-    n = int(payload[0]["results"][0]["n"] or 0)
+    command = ["npx", "wrangler", "d1", "execute", "h1sort-chat", "--remote", "--json", "--command", sql]
+    n = None
+    for _ in range(2):
+        proc = subprocess.run(command, cwd=d1_repo, capture_output=True, text=True, timeout=60)
+        try:
+            payload = json.loads(proc.stdout)
+            if proc.returncode == 0 and isinstance(payload, list) and payload[0].get("success"):
+                n = int(payload[0]["results"][0]["n"] or 0)
+                break
+        except (ValueError, IndexError, KeyError, TypeError):
+            pass
+    if n is None:
+        raise RuntimeError("no se pudo consultar el conteo vivo de D1")
     now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     return n, now
 
@@ -96,14 +103,16 @@ def _databricks_snapshot_count(dataset: str = "class2") -> tuple[int, str, bool]
     comparar "N de M filas" sobre la misma unidad.
     """
     try:
-        if not (os.environ.get("DATABRICKS_HOST") and (os.environ.get("DATABRICKS_TOKEN") or os.environ.get("DATABRICKS_AGENT_TOKEN"))):
-            raise RuntimeError("Databricks no configurado")
         spec = importlib.util.spec_from_file_location(
             "class2_run_sql", ROOT / "demos/clase-02/databricks/run_sql.py"
         )
         run_sql = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(run_sql)
-        run_sql.ensure_credentials()
+        dotenv_path = run_sql.find_dotenv(ROOT / "demos/clase-02/databricks")
+        if dotenv_path is not None:
+            run_sql.load_dotenv(dotenv_path)
+        if not (os.environ.get("DATABRICKS_HOST") and (os.environ.get("DATABRICKS_TOKEN") or os.environ.get("DATABRICKS_AGENT_TOKEN"))):
+            raise RuntimeError("Databricks no configurado")
         agent_token = os.environ.get("DATABRICKS_AGENT_TOKEN")
         if agent_token:
             os.environ["DATABRICKS_TOKEN"] = agent_token  # same scoped identity as the rest of the pipeline (see _lib.sh)

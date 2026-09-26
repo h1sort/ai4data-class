@@ -1,0 +1,87 @@
+[0m
+> build · longcat-2.5-preview-free
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT payment_type,
+       COUNT(*) AS filas,
+       ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS pct_total,
+       ROUND(AVG(tip_amount), 4) AS avg_tip,
+       ROUND(AVG(CASE WHEN fare_amount > 0 THEN tip_amount / fare_amount END) * 100, 2) AS avg_tip_pct
+FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0{1,2,3}.parquet')
+GROUP BY payment_type
+ORDER BY payment_type;
+"
+IO Error: No files found that match the pattern "/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0{1,2,3}.parquet"
+
+LINE 7: FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase...
+             ^
+[0m
+Solo `payment_type = 1` (tarjeta) tiene propina registrada; el resto es ~0 estructural, no comparable. Verifico con consultas:
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT COUNT(*) AS total,
+       COUNT_IF(payment_type = 0) AS filas_pt0,
+       ROUND(100.0 * COUNT_IF(payment_type = 0) / COUNT(*), 2) AS pct_pt0,
+       COUNT_IF(payment_type = 1) AS filas_pt1,
+       COUNT_IF(tip_amount > 0 AND payment_type = 1) AS pt1_tip_positivo
+FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0{1,2,3}.parquet');
+"
+IO Error: No files found that match the pattern "/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0{1,2,3}.parquet"
+
+LINE 7: FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase...
+             ^
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT payment_type,
+       COUNT(*) AS filas,
+       ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS pct_total,
+       ROUND(AVG(tip_amount), 4) AS avg_tip,
+       ROUND(AVG(CASE WHEN fare_amount > 0 THEN tip_amount / fare_amount END) * 100, 2) AS avg_tip_pct
+FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0*.parquet')
+GROUP BY payment_type
+ORDER BY payment_type;
+"
+┌──────────────┬─────────┬───────────┬─────────┬─────────────┐
+│ payment_type │  filas  │ pct_total │ avg_tip │ avg_tip_pct │
+│    int64     │  int64  │  double   │ double  │   double    │
+├──────────────┼─────────┼───────────┼─────────┼─────────────┤
+│            0 │ 2263749 │     20.22 │  0.3709 │        2.11 │
+│            1 │ 7484734 │     66.84 │  4.1483 │       26.72 │
+│            2 │ 1135757 │     10.14 │  0.0031 │         0.0 │
+│            3 │   72546 │      0.65 │  0.0213 │         0.2 │
+│            4 │  241239 │      2.15 │  0.0416 │        0.08 │
+│            5 │       1 │       0.0 │     0.0 │        NULL │
+└──────────────┴─────────┴───────────┴─────────┴─────────────┘
+[0m
+El patrón con llaves no expandió. Uso comodín:
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT COUNT(*) AS total,
+       COUNT_IF(payment_type = 0) AS filas_pt0,
+       ROUND(100.0 * COUNT_IF(payment_type = 0) / COUNT(*), 2) AS pct_pt0,
+       COUNT_IF(payment_type = 1) AS filas_pt1,
+       COUNT_IF(tip_amount > 0 AND payment_type = 1) AS pt1_tip_positivo
+FROM read_parquet('/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-0*.parquet');
+"
+┌──────────┬───────────┬─────────┬───────────┬──────────────────┐
+│  total   │ filas_pt0 │ pct_pt0 │ filas_pt1 │ pt1_tip_positivo │
+│  int64   │  int128   │ double  │  int128   │      int128      │
+├──────────┼───────────┼─────────┼───────────┼──────────────────┤
+│ 11198026 │   2263749 │   20.22 │   7484734 │          7027936 │
+└──────────┴───────────┴─────────┴───────────┴──────────────────┘
+[0m
+**No se puede responder "qué forma de pago deja más propina"** con estos datos — es una comparación que el dataset no sostiene:
+
+- `tip_amount` solo se captura para `payment_type = 1` (tarjeta). Para los demás códigos es ~0 estructural, no evidencia de que esos pasajeros no den propina.
+- El 26,72 % de `tip_pct` promedio de tarjeta es la **única** medición real de propina en el dataset; compararla con el ~0 % de efectivo u otros sería inválido.
+
+Números verificados (11.198.026 filas, ene–mar 2025):
+
+| payment_type | filas | % total | avg_tip | avg_tip_pct |
+|---|---|---|---|---|
+| 0 | 2.263.749 | 20,22 % | 0,37 | 2,11 % |
+| 1 | 7.484.734 | 66,84 % | 4,15 | 26,72 % |
+| 2 | 1.135.757 | 10,14 % | 0,003 | 0 % |
+| 3 | 72.546 | 0,65 % | 0,02 | 0,2 % |
+| 4 | 241.239 | 2,15 % | 0,04 | 0,08 % |
+| 5 | 1 | ~0 % | 0 | n/a |
+
+**Alerta de calidad de dato:** `payment_type = 0` (Flex Fare / cajón de sastre) representa **2.263.749 filas (20,22 %)** del total — demasiado grande para ignorar o etiquetar como "Flex Fare" legítimo. Trátalo como calidad de dato desconocida.

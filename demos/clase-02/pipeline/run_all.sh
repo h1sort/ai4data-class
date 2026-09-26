@@ -101,7 +101,7 @@ print_summary() {
 run_step "01_extract"     "$SCRIPT_DIR/01_extract.sh" "$GROUP_CODE_C2,$GROUP_CODE_C1" "$RUN_ID"
 run_step "02_load"        "$SCRIPT_DIR/02_load.sh" "$RUN_ID"
 run_step "03_model"       "$SCRIPT_DIR/03_model.sh" "$SCHEMA" "$GROUP_CODE_C2" "$GROUP_CODE_C1" "$CUTOFF"
-run_step "04_tests"       "$SCRIPT_DIR/04_tests.sh" "$SCHEMA" "$GROUP_CODE_C2" "$GROUP_CODE_C1" "$CUTOFF"
+run_step "04_tests"       "$SCRIPT_DIR/04_tests.sh" "$SCHEMA" "$GROUP_CODE_C2" "$GROUP_CODE_C1" "$CUTOFF" "$RUN_ID"
 run_step "05_ai_classify" "$SCRIPT_DIR/05_ai_classify.sh" "$SCHEMA"
 
 if command -v uv >/dev/null 2>&1; then

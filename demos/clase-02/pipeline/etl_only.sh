@@ -4,6 +4,8 @@
 # Runs extract -> load -> model -> reconciliation and stops before AI/Jev.
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=_lib.sh
+source "$SCRIPT_DIR/_lib.sh"
 
 DATASET=""
 while [[ $# -gt 0 ]]; do
@@ -37,17 +39,20 @@ else
   # The C2 model uses the optional declared-role overlap with Class 1.
   GROUP_CODES="$C2_CODE,$C1_CODE"
 fi
+# WS0 fix (Class 3): belt-and-suspenders even though SCHEMA/*_CODE are
+# hardcoded literals above -- see _lib.sh's guard_schema_group for why.
+guard_schema_group "$SCHEMA" "$C1_CODE" "$C2_CODE"
 
 echo "=== stage ETL: dataset=$DATASET schema=$SCHEMA run_id=$RUN_ID cutoff=$CUTOFF ==="
 echo "[etl] D1 remains read-only; paid classifiers are not part of this run."
 bash "$SCRIPT_DIR/01_extract.sh" "$GROUP_CODES" "$RUN_ID"
 bash "$SCRIPT_DIR/02_load.sh" "$RUN_ID"
 bash "$SCRIPT_DIR/03_c1_model.sh" "$SCHEMA" "$C1_CODE" "$CUTOFF"
-bash "$SCRIPT_DIR/04_c1_tests.sh" "$SCHEMA" "$C1_CODE" "$CUTOFF"
+bash "$SCRIPT_DIR/04_c1_tests.sh" "$SCHEMA" "$C1_CODE" "$CUTOFF" "$RUN_ID"
 
 if [[ "$DATASET" == "class2" ]]; then
   bash "$SCRIPT_DIR/03_model.sh" "$SCHEMA" "$C2_CODE" "$C1_CODE" "$CUTOFF"
-  bash "$SCRIPT_DIR/04_tests.sh" "$SCHEMA" "$C2_CODE" "$C1_CODE" "$CUTOFF"
+  bash "$SCRIPT_DIR/04_tests.sh" "$SCHEMA" "$C2_CODE" "$C1_CODE" "$CUTOFF" "$RUN_ID"
 fi
 
 echo "=== stage ETL complete: dataset=$DATASET run_id=$RUN_ID ==="

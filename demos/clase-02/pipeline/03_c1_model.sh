@@ -18,6 +18,7 @@ if [[ ! "$GROUP_CODE_C1" =~ ^[A-Z0-9]{10}$ ]]; then
   echo "error: invalid Class 1 group code" >&2
   exit 2
 fi
+guard_schema_group "$SCHEMA" "$GROUP_CODE_C1"
 
 load_env
 echo "[c1_model] schema=$SCHEMA group=$GROUP_CODE_C1 cutoff=$CUTOFF"

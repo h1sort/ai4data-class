@@ -1,0 +1,67 @@
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "DESCRIBE SELECT * FROM '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-01.parquet' LIMIT 1"
+[90m┌──────────────────────────────────────────────────────────────────────────────────────────┐[00m[90m
+[00m[90m│ [00m[1m/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-01.parquet[00m[90m │[00m[90m
+[00m[90m│                                                                                          │[00m[90m
+[00m[90m│ [00mVendorID[90m                                                                       [00m[90minteger[00m[90m   [00m[90m│[00m[90m
+[00m[90m│ [00mtpep_pickup_datetime[90m                                                           [00m[90mtimestamp[00m[90m [00m[90m│[00m[90m
+[00m[90m│ [00mtpep_dropoff_datetime[90m                                                          [00m[90mtimestamp[00m[90m [00m[90m│[00m[90m
+[00m[90m│ [00mpassenger_count[90m                                                                [00m[90mbigint[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mtrip_distance[90m                                                                  [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mRatecodeID[90m                                                                     [00m[90mbigint[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mstore_and_fwd_flag[90m                                                             [00m[90mvarchar[00m[90m   [00m[90m│[00m[90m
+[00m[90m│ [00mPULocationID[90m                                                                   [00m[90minteger[00m[90m   [00m[90m│[00m[90m
+[00m[90m│ [00mDOLocationID[90m                                                                   [00m[90minteger[00m[90m   [00m[90m│[00m[90m
+[00m[90m│ [00mpayment_type[90m                                                                   [00m[90mbigint[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mfare_amount[90m                                                                    [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mextra[90m                                                                          [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mmta_tax[90m                                                                        [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mtip_amount[90m                                                                     [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mtolls_amount[90m                                                                   [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mimprovement_surcharge[90m                                                          [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mtotal_amount[90m                                                                   [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mcongestion_surcharge[90m                                                           [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mAirport_fee[90m                                                                    [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m│ [00mcbd_congestion_fee[90m                                                             [00m[90mdouble[00m[90m    [00m[90m│[00m[90m
+[00m[90m└──────────────────────────────────────────────────────────────────────────────────────────┘[00m[90m
+[00m
+[0m
+[0m$ [0m/opt/homebrew/bin/duckdb -c "
+SELECT 
+  payment_type,
+  COUNT(*) as trips,
+  AVG(tip_amount) as avg_tip,
+  MAX(tip_amount) as max_tip,
+  SUM(tip_amount) as total_tips
+FROM read_parquet([
+  '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-01.parquet',
+  '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-02.parquet',
+  '/Users/Haro/Code/ai4data-class/demos/clase-02/scale/data/yellow_tripdata_2025-03.parquet'
+])
+GROUP BY payment_type
+ORDER BY avg_tip DESC
+"
+┌──────────────┬─────────┬──────────────────────┬─────────┬────────────────────┐
+│ payment_type │  trips  │       avg_tip        │ max_tip │     total_tips     │
+│    int64     │  int64  │        double        │ double  │       double       │
+├──────────────┼─────────┼──────────────────────┼─────────┼────────────────────┤
+│            1 │ 7484734 │    4.148312455725826 │   440.0 │ 31049015.279994585 │
+│            0 │ 2263749 │  0.37086089933115235 │   76.56 │  839535.9899999968 │
+│            4 │  241239 │  0.04155480664403351 │  123.34 │           10024.64 │
+│            3 │   72546 │ 0.021257546935737323 │   220.0 │ 1542.1499999999999 │
+│            2 │ 1135757 │ 0.003093117629915554 │   41.13 │ 3513.0299999999997 │
+│            5 │       1 │                  0.0 │     0.0 │                0.0 │
+└──────────────┴─────────┴──────────────────────┴─────────┴────────────────────┘
+[0m
+**Pago con tarjeta de crédito (payment_type = 1)** — tiene el promedio de propina más alto: **$4.15 por viaje**.
+
+| payment_type | Descripción típica | Promedio propina | Viajes |
+|--------------|-------------------|------------------|--------|
+| 1 | Tarjeta de crédito | **$4.15** | 7.48M |
+| 0 | (desconocido/variable) | $0.37 | 2.26M |
+| 4 | Disputa | $0.04 | 241K |
+| 3 | Sin cargo | $0.02 | 72.5K |
+| 2 | Efectivo | $0.003 | 1.14M |
+| 5 | Desconocido | $0.00 | 1 |

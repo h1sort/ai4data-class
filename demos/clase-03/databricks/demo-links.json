@@ -1,0 +1,10 @@
+{
+  "workspace_host": "https://dbc-df3c4dbf-3ef7.cloud.databricks.com",
+  "notebooks": {
+    "10_trap2_walkthrough": {
+      "source": "demos/clase-03/databricks/10_trap2_walkthrough.ipynb",
+      "workspace_path": "/Shared/AI4Data/Clase3/10_trap2_walkthrough",
+      "workspace_url": "https://dbc-df3c4dbf-3ef7.cloud.databricks.com/#workspace/Shared/AI4Data/Clase3/10_trap2_walkthrough"
+    }
+  }
+}

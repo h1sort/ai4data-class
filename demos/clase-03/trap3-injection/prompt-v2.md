@@ -221,29 +221,47 @@ hoy** por este ataque específico, porque ninguna de las 165 respuestas de
 `inventory.md`) — pero el poll sigue abierto, así que re-chequear antes de
 presentar (§5 de `inventory.md`).
 
-## Qué falta para el recuento de toda la clase
+## Recuento de toda la clase — medido, `workspace.ai4data.c3_personas_v2`
 
-`ai_classify` v1/v2 sobre las 9 filas reales de basura/inyección ya está
-medido (tabla de arriba). Lo que falta es el recuento "¿cuántos
-ejecutivos?" sobre **las 165 personas reales con `puesto_texto`**, por
-método (`ai_classify` y Jev por separado), más la lista de filas cuya
-etiqueta cambió:
+WS3 publicó `workspace.ai4data.c3_personas_v1` (`participant_key`,
+`persona_jev`, `persona_jev_confidence`, `persona_ai_classify`) sobre las
+165 personas reales con `puesto_texto`. WS4 construyó
+`workspace.ai4data.c3_personas_v2` (`ai_classify` v2 + Jev v2, prompt
+delimitado + `no_valido`) sobre las mismas 165, vía
+`ws4_v2_pipeline.py` (script offline, reusa
+`demos/clase-02/databricks/run_sql.py` + `TYPESAFE_API_KEY` de `.env`;
+equivalente en vivo: `20_injection_v2.ipynb` "Paso 3"). Medido
+2026-09-26 ~15:35 UTC:
 
-1. WS3 publica `workspace.ai4data.c3_personas_v1` — columnas
-   `participant_key`, `persona_jev`, `persona_ai_classify` — sobre los 165
-   `puesto_texto` reales.
-2. WS4 construye `workspace.ai4data.c3_personas_v2` (`ai_classify` + Jev,
-   prompt delimitado + `no_valido`) sobre las mismas 165 personas y
-   recalcula el recuento **por método**, más la lista de filas cuya
-   etiqueta cambió (texto redactado, nunca `participant_key`).
-3. Si `c3_personas_v1` no aparece a tiempo, WS4 calcula v1 él mismo
-   (mismo taxonomy que `05_ai_classify.sql`/`06_jev.py`) y lo deja anotado
-   explícitamente como "calculado por WS4, no la tabla oficial de WS3".
+| método | v1 ejecutivos | v2 ejecutivos | v2 `no_valido` |
+|---|---|---|---|
+| `ai_classify` | **8**/165 | **7**/165 | 17 |
+| Jev | **11**/165 | **11**/165 | 4 |
 
-Implementado en dos lugares equivalentes: `20_injection_v2.ipynb` ("Paso
-3", para correr en vivo en Databricks con `dbutils.secrets`) y
-`ws4_v2_pipeline.py` (script offline que reusa
-`demos/clase-02/databricks/run_sql.py` + `TYPESAFE_API_KEY` de `.env`,
-usado para obtener los números de esta sección sin depender de un notebook
-abierto). Resultado real (recuento por método, v1 vs v2, y filas
-cambiadas) en `reports/WS4.md` una vez que corrió.
+Lectura: ninguna persona real de la clase escribió un intento de
+label-steering hacia `ejecutivo` (§ arriba), así que este recuento no
+prueba que v2 bloquee ese ataque específico con datos reales — lo que sí
+demuestra es que v2 **no desestabiliza los positivos reales** (Jev: 11→11
+exacto) mientras **saca 17 (ai_classify) / 4 (Jev) filas de basura o
+inyección de las 5 etiquetas "productivas" hacia `no_valido`**, donde antes
+se mezclaban sin distinción dentro de `otro`/`practitioner`/etc. La única
+baja en `ai_classify` (8→7) es la fila "Emprendedor", que v1 etiquetó
+`ejecutivo` y v2 reclasificó como `otro` — no es una fila de inyección; es
+una reclasificación de un caso ambiguo, y se documenta como tal, no como
+una mitigación de ataque.
+
+**Aviso honesto — v2 movió más filas de las que apuntaba a arreglar.**
+32/165 filas (19%) cambiaron de etiqueta en al menos un método. La mayoría
+son Jev pasando de `practitioner` a `otro` en puestos reales no técnicos
+(`Contador`, `Medica`, `Oficial de Desarrollo`, ...) — razonable según la
+propia definición de `practitioner` ("analista, ingeniero/a, científico/a
+de datos que ejecuta trabajo técnico"), pero es un cambio de
+**comportamiento general**, no solo de defensa anti-inyección: reescribir
+`instructions`/`criteria` para Jev (v2 es más explícito y más largo que
+v1) desplazó el juicio del modelo más allá de las filas de basura/inyección
+que motivaron el cambio. Esto no es necesariamente peor — podría ser más
+correcto según el propio taxonomy — pero **no estaba en el alcance
+declarado de v2** (defensa contra manipulación) y merece revisión de quien
+sea dueño de la exactitud general de la clasificación (WS3) antes de
+tratar `c3_personas_v2` como reemplazo de `c3_personas_v1` para cualquier
+propósito que no sea esta demo.

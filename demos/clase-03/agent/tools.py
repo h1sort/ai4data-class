@@ -87,8 +87,14 @@ def _d1_live_count() -> tuple[int, str]:
     return n, now
 
 
-def _databricks_snapshot_count() -> tuple[int, str, bool]:
-    """(conteo, loaded_at, es_stub). Intenta la tabla real de WS3; si no existe, hace stub."""
+def _databricks_snapshot_count(dataset: str = "class2") -> tuple[int, str, bool]:
+    """(conteo, loaded_at, es_stub). Lee la fila mas reciente de etl_snapshots para `dataset`.
+
+    conteo = suma de los contadores de fuente D1 que ese snapshot cargo
+    (confianza + puesto + tarea para class2; c1_answers para class1) --
+    la misma cantidad que _d1_live_count() mide en vivo, para poder
+    comparar "N de M filas" sobre la misma unidad.
+    """
     try:
         if not (os.environ.get("DATABRICKS_HOST") and (os.environ.get("DATABRICKS_TOKEN") or os.environ.get("DATABRICKS_AGENT_TOKEN"))):
             raise RuntimeError("Databricks no configurado")
@@ -98,21 +104,32 @@ def _databricks_snapshot_count() -> tuple[int, str, bool]:
         run_sql = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(run_sql)
         run_sql.ensure_credentials()
+        agent_token = os.environ.get("DATABRICKS_AGENT_TOKEN")
+        if agent_token:
+            os.environ["DATABRICKS_TOKEN"] = agent_token  # same scoped identity as the rest of the pipeline (see _lib.sh)
+        count_expr = (
+            "COALESCE(d1_c1_answers, 0)" if dataset == "class1"
+            else "COALESCE(d1_votes_confianza, 0) + COALESCE(d1_text_puesto, 0) + COALESCE(d1_text_tarea, 0)"
+        )
+        sql = (
+            f"SELECT loaded_at_utc, {count_expr} AS n FROM {SNAPSHOT_TABLE} "
+            f"WHERE dataset = '{dataset}' AND status = 'PASS' "
+            "ORDER BY loaded_at_utc DESC LIMIT 1"
+        )
         result = run_sql.poll_until_terminal(
-            run_sql.submit_statement(
-                f"SELECT COUNT(*) AS n, MAX(loaded_at) AS loaded_at FROM {SNAPSHOT_TABLE}",
-                run_sql.DEFAULT_WAREHOUSE_ID,
-                "workspace",
-            )
+            run_sql.submit_statement(sql, run_sql.DEFAULT_WAREHOUSE_ID, "workspace")
         )
         if result.get("status", {}).get("state") != "SUCCEEDED":
             raise RuntimeError("consulta a Databricks no tuvo éxito")
-        row = result["result"]["data_array"][0]
-        return int(row[0]), str(row[1]), False
-    except Exception:
-        # WS3/WS0 (CLASE3-PLAN.md) todavía no publican la tabla de snapshot.
+        rows = result.get("result", {}).get("data_array", [])
+        if not rows:
+            raise RuntimeError(f"{SNAPSHOT_TABLE} no tiene filas PASS para dataset={dataset!r}")
+        loaded_at, n = rows[0]
+        return int(n), str(loaded_at), False
+    except Exception as exc:
+        # Tabla o fila ausente (p.ej. dataset sin ETL corrido todavia).
         # Interfaz clara de reemplazo: cuando exista, esta rama deja de usarse sola.
-        return 0, "STUB -- WS3 aún no publica workspace.ai4data.c3_personas_v1", True
+        return 0, f"STUB -- no se pudo leer {SNAPSHOT_TABLE} para dataset={dataset!r} ({exc})", True
 
 
 def extract_text(content) -> str:
@@ -125,8 +142,8 @@ def extract_text(content) -> str:
 def check_freshness(dataset: str = "class2") -> str:
     """Compara el conteo vivo en D1 contra el snapshot cargado en Databricks."""
     live_n, live_at = _d1_live_count()
-    snap_n, snap_at, is_stub = _databricks_snapshot_count()
-    note = " [snapshot STUB, ver TODO(WS3) en tools.py]" if is_stub else ""
+    snap_n, snap_at, is_stub = _databricks_snapshot_count(dataset)
+    note = " [snapshot STUB -- ver _databricks_snapshot_count() en tools.py]" if is_stub else ""
     estado = "hay respuestas nuevas sin cargar" if live_n > snap_n else "está al día"
     return (
         f"a fecha {snap_at}, el snapshot tiene {snap_n} de {live_n} filas que hay ahora mismo "
